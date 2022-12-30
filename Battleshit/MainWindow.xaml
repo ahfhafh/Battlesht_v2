@@ -6,14 +6,21 @@
         xmlns:local="clr-namespace:Battleshit"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280"
-        Background="{StaticResource BackgroundColor}">
+        Background="{StaticResource BackgroundColor}"
+        ResizeMode="CanMinimize">
     <Grid>
-        <Border BorderBrush="Black" BorderThickness="4" Height="408" Margin="150,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="408" >
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
             <UniformGrid x:Name="Board1"
-                         Width="400"
-                         Height="400"
-                         Background="{StaticResource BoardBackgroundColor}" HorizontalAlignment="Center"/>
-        </Border>
-        <Border BorderBrush="Black" BorderThickness="4" Width="408" Height="408" Margin="0,100,150,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                    Background="{StaticResource BoardBackgroundColor}" Margin="0,117,0,0" HorizontalAlignment="Center" Width="400" Height="400" VerticalAlignment="Top"/>
+
+            <UniformGrid x:Name="Board2"
+                    Background="{StaticResource BoardBackgroundColor}" Margin="0,117,0,0" HorizontalAlignment="Center" Width="400" Height="400" VerticalAlignment="Top" Grid.Column="1"/>
+        </Grid>
     </Grid>
+
 </Window>
