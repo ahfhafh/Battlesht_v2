@@ -8,7 +8,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="assets\" />
+    <None Remove="Assets\long_stool.png" />
+    <None Remove="Assets\shit_bg.png" />
+    <None Remove="Assets\stool_2.png" />
+    <None Remove="Assets\stool_3.png" />
+    <None Remove="Assets\stool_4.png" />
+    <None Remove="Assets\stool_5.png" />
+    <None Remove="Assets\stool_head.png" />
+    <None Remove="Assets\stool_mid.png" />
+    <None Remove="Assets\stool_tail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\shit_bg.png" />
+    <Resource Include="Assets\stool_2.png" />
+    <Resource Include="Assets\stool_3.png" />
+    <Resource Include="Assets\stool_4.png" />
+    <Resource Include="Assets\stool_5.png" />
+    <Resource Include="Assets\stool_head.png" />
+    <Resource Include="Assets\stool_mid.png" />
+    <Resource Include="Assets\stool_tail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\long_stool.png" />
   </ItemGroup>
 
 </Project>
