@@ -7,6 +7,7 @@ namespace Battleshit
     public static class Images
     {
         public readonly static ImageSource Shit_bg = LoadImage("shit_bg.png");
+        public readonly static ImageSource Shit_bg_miss = LoadImage("shit_bg_miss.png");
         public readonly static ImageSource Shit_5 = LoadImage("stool_5.png");
         public readonly static ImageSource Shit_4 = LoadImage("stool_4.png");
         public readonly static ImageSource Shit_3 = LoadImage("stool_3.png");
