@@ -34,6 +34,8 @@ namespace Battleshit
             { BoardValues.Head_x, Images.Shit_head }
         };
 
+        private bool clickable = true;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -256,12 +258,18 @@ namespace Battleshit
 
         private async void playerTurnClick(object sender, RoutedEventArgs e)
         {
+            // Disable click
+            if (!clickable)
+            {
+                return;
+            }
+
+            clickable = false;
+
             Image img = sender as Image;
             UniformGrid parent = (UniformGrid)img.Parent;
-
-            // Disable click
-
-
+            
+            // get index of img in board
             int index = parent.Children.IndexOf(img);
             int x = index / 10;
             int y = index % 10;
@@ -309,6 +317,7 @@ namespace Battleshit
             }
 
             // Enable Click
+            clickable = true;
             GameStatusLabel.Content = "Your turn";
 
         }
