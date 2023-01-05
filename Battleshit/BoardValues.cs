@@ -3,11 +3,13 @@
     public enum BoardValues
     {
         Empty = 0,
-        Destroyer = 1,
-        Submarine = 2,
-        Cruiser = 3,
-        Battleship = 4,
-        Carrier = 5,
-        Destroyed = 6
+        Head_x = 1,
+        Head_y = 2,
+        Body_x = 3,
+        Body_y = 4,
+        Tail_x = 5,
+        Tail_y = 6,
+        Destroyed = 7,
+        Miss = 8
     }
 }
