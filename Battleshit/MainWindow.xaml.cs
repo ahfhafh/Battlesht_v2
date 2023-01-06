@@ -26,14 +26,6 @@ namespace Battleshit
 
         private readonly Random random = new Random();
 
-        private readonly Dictionary<BoardValues, ImageSource> boardValToImage = new()
-        {
-            { BoardValues.Empty, Images.Shit_bg },
-            { BoardValues.Destroyed, Images.Shit_bg },
-            { BoardValues.Miss, Images.Shit_bg_miss},
-            { BoardValues.Head_x, Images.Shit_head }
-        };
-
         private bool clickable = true;
 
         public MainWindow()
@@ -44,67 +36,6 @@ namespace Battleshit
             boardImages2 = SetupBoard(Board2, gamestate.Board2, false);
 
             GameStatusLabel.Content = "Your turn to fire!";
-
-            // false: player 1, true: player 2
-            /*while (gamestate.who_won == null)
-            {
-                // player 1 turn
-                if (!gamestate.whos_turn)
-                {
-                    // check if player 1 lost
-                    for (int i = 0; i < rows; i++)
-                    {
-                        for (int j = 0; j < cols; j++)
-                        {
-                            if (((int)gamestate.Board1[i, j] != 0) && ((int)gamestate.Board1[i, j] != 6)) // its a shit
-                            {
-                                goto continueGame1;
-                            }
-                        }
-                    }
-                    gamestate.who_won = true;
-                    goto CheckWon;
-
-                continueGame1:
-                    GameStatusLabel.Content = "Player 1 turn: pick a coordinate to attack";
-                    gamestate.whos_turn = !gamestate.whos_turn;
-                }
-                else // player 2 turn
-                {
-                    // check if player 2 lost
-                    for (int i = 0; i < rows; i++)
-                    {
-                        for (int j = 0; j < cols; j++)
-                        {
-                            if (((int)gamestate.Board2[i, j] != 0) && ((int)gamestate.Board2[i, j] != 6)) // its a shit
-                            {
-                                goto continueGame2;
-                            }
-                        }
-                    }
-                    gamestate.who_won = false;
-                    goto CheckWon;
-
-                continueGame2:
-                    GameStatusLabel.Content = "Player 2 turn: pick a coordinate to attack";
-                    gamestate.whos_turn = !gamestate.whos_turn;
-                }
-
-                gamestate.who_won = false;
-            }
-
-
-
-        CheckWon:
-            // check who won
-            if (!(bool)gamestate.who_won)
-            {
-                Debug.WriteLine("Player 1 Won!");
-            }
-            else
-            {
-                Debug.WriteLine("Player 2 Won!");
-            }*/
         }
         
         public Image[,] SetupBoard(UniformGrid Board, BoardValues[,] boardValues, bool isPlayerBoard)
@@ -292,6 +223,23 @@ namespace Battleshit
                 DrawBoard(boardImages2, gamestate.Board2);
             }
 
+            // Check if player won
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    // exist a shit
+                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)gamestate.Board2[i, j]))
+                    {
+                        goto continueGame1;
+                    }
+                }
+            }
+
+            GameStatusLabel.Content = "You won!";
+            return;
+
+        continueGame1:
             // Do computer turn
             GameStatusLabel.Content = "Wait for computer...";
             await Task.Delay(1000);
@@ -315,6 +263,24 @@ namespace Battleshit
                 gamestate.Board1[rnd_x, rnd_y] = BoardValues.Miss;
                 DrawBoard(boardImages1, gamestate.Board1);
             }
+
+            // Check if computer won
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    // exist a shit
+                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)gamestate.Board1[i, j]))
+                    {
+                        goto continueGame2;
+                    }
+                }
+            }
+
+            GameStatusLabel.Content = "You lost!";
+            return;
+
+        continueGame2:
 
             // Enable Click
             clickable = true;
