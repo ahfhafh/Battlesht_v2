@@ -69,36 +69,42 @@ namespace Battleshit
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Head_x:
-                            image.Source = Images.Shit_head;
+                            if (isPlayerBoard) { image.Source = Images.Shit_head; }
+                            else { image.Source = Images.Shit_bg; }
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Head_y:
-                            image.Source = Images.Shit_head;
+                            if (isPlayerBoard) { image.Source = Images.Shit_head; }
+                            else { image.Source = Images.Shit_bg; }
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Body_x:
-                            image.Source = Images.Shit_body;
+                            if (isPlayerBoard) { image.Source = Images.Shit_body; }
+                            else { image.Source = Images.Shit_bg; }
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Body_y:
-                            image.Source = Images.Shit_body;
+                            if (isPlayerBoard) { image.Source = Images.Shit_body; }
+                            else { image.Source = Images.Shit_bg; }
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Tail_x:
-                            image.Source = Images.Shit_tail;
+                            if (isPlayerBoard) { image.Source = Images.Shit_tail; }
+                            else { image.Source = Images.Shit_bg; }
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
                         case BoardValues.Tail_y:
-                            image.Source = Images.Shit_tail;
+                            if (isPlayerBoard) { image.Source = Images.Shit_tail; }
+                            else { image.Source = Images.Shit_bg; }
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
                             images[x, y] = image;
@@ -112,7 +118,7 @@ namespace Battleshit
             return images;
         }
 
-        private void DrawBoard(Image[,] boardImages, BoardValues[,] boardValues)
+        private void DrawBoard(Image[,] boardImages, BoardValues[,] boardValues, bool isPlayerBoard)
         {
             RotateTransform rotateTransform = new(90);
 
@@ -126,31 +132,37 @@ namespace Battleshit
                             boardImages[x, y].Source = Images.Shit_bg;
                             break;
                         case BoardValues.Head_x:
-                            boardImages[x, y].Source = Images.Shit_head;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_head; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             break;
                         case BoardValues.Head_y:
-                            boardImages[x, y].Source = Images.Shit_head;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_head; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
                         case BoardValues.Body_x:
-                            boardImages[x, y].Source = Images.Shit_body;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_body; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             break;
                         case BoardValues.Body_y:
-                            boardImages[x, y].Source = Images.Shit_body;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_body; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
                         case BoardValues.Tail_x:
-                            boardImages[x, y].Source = Images.Shit_tail;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_tail; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             break;
                         case BoardValues.Tail_y:
-                            boardImages[x, y].Source = Images.Shit_tail;
+                            if (isPlayerBoard) { boardImages[x, y].Source = Images.Shit_tail; }
+                            else { boardImages[x, y].Source = Images.Shit_bg; }
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
                         case BoardValues.Destroyed:
-                            boardImages[x, y].Source = Images.Shit_bg_miss;
+                            boardImages[x, y].Source = Images.Shit_destroyed;
                             break;
                         case BoardValues.Miss:
                             boardImages[x, y].Source = Images.Shit_bg_miss;
@@ -211,16 +223,16 @@ namespace Battleshit
                 return;
             }
             // Check if is shit
-            if (img.Source != Images.Shit_bg)
+            if (this.gamestate.Board2[x, y] != BoardValues.Empty)
             {
                 // Mark as clicked
                 gamestate.Board2[x, y] = BoardValues.Destroyed;
-                DrawBoard(this.boardImages2, this.gamestate.Board2);
+                DrawBoard(this.boardImages2, this.gamestate.Board2, false);
             } else
             {
                 // Mark as clicked
                 gamestate.Board2[x, y] = BoardValues.Miss;
-                DrawBoard(this.boardImages2, this.gamestate.Board2);
+                DrawBoard(this.boardImages2, this.gamestate.Board2, false);
             }
 
             // Check if player won
@@ -256,12 +268,12 @@ namespace Battleshit
             {
                 // Mark as clicked
                 gamestate.Board1[rnd_x, rnd_y] = BoardValues.Destroyed;
-                DrawBoard(this.boardImages1, this.gamestate.Board1);
+                DrawBoard(this.boardImages1, this.gamestate.Board1, true);
             } else
             {
                 // Mark as clicked
                 gamestate.Board1[rnd_x, rnd_y] = BoardValues.Miss;
-                DrawBoard(this.boardImages1, this.gamestate.Board1);
+                DrawBoard(this.boardImages1, this.gamestate.Board1, true);
             }
 
             // Check if computer won

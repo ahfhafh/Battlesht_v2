@@ -12,7 +12,7 @@ namespace Battleshit
         public BoardValues[,] Board2 { get; }
 
         public Shit[] availableShits1 { get; } = { Shit.Carrier, Shit.Destroyer, Shit.Battleship, Shit.Cruiser, Shit.Submarine };
-        public Shit[] availableShits2 { get; } = { Shit.Carrier, Shit.Destroyer, Shit.Battleship, Shit.Cruiser, Shit.Submarine };
+        public Shit[] availableShits2 { get; } = { Shit.Submarine };
         private Shit[] placedShits1 { get; }
         private Shit[] placedShits2 { get; }
 

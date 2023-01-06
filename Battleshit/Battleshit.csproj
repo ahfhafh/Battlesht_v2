@@ -11,6 +11,7 @@
     <None Remove="Assets\long_stool.png" />
     <None Remove="Assets\shit_bg.png" />
     <None Remove="Assets\shit_bg_miss.png" />
+    <None Remove="Assets\shit_destroyed.png" />
     <None Remove="Assets\stool_2.png" />
     <None Remove="Assets\stool_3.png" />
     <None Remove="Assets\stool_4.png" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <Resource Include="Assets\shit_bg.png" />
     <Resource Include="Assets\shit_bg_miss.png" />
+    <Resource Include="Assets\shit_destroyed.png" />
     <Resource Include="Assets\stool_2.png" />
     <Resource Include="Assets\stool_3.png" />
     <Resource Include="Assets\stool_4.png" />
