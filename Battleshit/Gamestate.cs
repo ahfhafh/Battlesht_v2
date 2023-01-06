@@ -16,14 +16,14 @@ namespace Battleshit
         private Shit[] placedShits1 { get; }
         private Shit[] placedShits2 { get; }
 
-        public bool? who_won { get; set; }
+        public bool? whoWon { get; set; }
         public bool whos_turn;
 
         private readonly Random random = new Random();
 
         public Gamestate(int rows, int cols)
         {
-            who_won = null;
+            whoWon = null;
             Rows = rows;
             Cols = cols;
             Board1 = new BoardValues[rows, cols];

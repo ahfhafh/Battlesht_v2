@@ -31,73 +31,73 @@ namespace Battleshit
         public MainWindow()
         {
             InitializeComponent();
-            gamestate = new Gamestate(rows, cols);
-            boardImages1 = SetupBoard(Board1, gamestate.Board1, true);
-            boardImages2 = SetupBoard(Board2, gamestate.Board2, false);
+            this.gamestate = new Gamestate(rows, cols);
+            this.boardImages1 = SetupBoard(Board1, gamestate.Board1, true);
+            this.boardImages2 = SetupBoard(Board2, gamestate.Board2, false);
 
             GameStatusLabel.Content = "Your turn to fire!";
         }
         
         public Image[,] SetupBoard(UniformGrid Board, BoardValues[,] boardValues, bool isPlayerBoard)
         {
-            Image[,] images = new Image[rows, cols];
-            Board.Rows = rows;
-            Board.Columns = cols;
+            Image[,] images = new Image[this.rows, this.cols];
+            Board.Rows = this.rows;
+            Board.Columns = this.cols;
 
-            RotateTransform rotateTransform = new RotateTransform(90);
+            RotateTransform rotateTransform = new(90);
 
             Print2DArray(boardValues);
 
-            for (int x = 0; x < rows; x++)
+            for (int x = 0; x < this.rows; x++)
             {
-                for (int y = 0; y < cols; y++)
+                for (int y = 0; y < this.cols; y++)
                 {
-                    Image image = new Image();
+                    Image image = new();
 
                     if (!isPlayerBoard) // allow click on enemy board
                     {
-                        image.MouseEnter += new MouseEventHandler(highlightElement);
-                        image.MouseLeave += new MouseEventHandler(unhighlightElement);
-                        image.MouseDown += playerTurnClick;
+                        image.MouseEnter += new MouseEventHandler(HighlightElement);
+                        image.MouseLeave += new MouseEventHandler(UnhighlightElement);
+                        image.MouseDown += PlayerTurnClick;
                     }
 
-                    switch(boardValues[x, y])
+                    switch (boardValues[x, y])
                     {
-                        case 0:
+                        case BoardValues.Empty:
                             image.Source = Images.Shit_bg;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)1:
+                        case BoardValues.Head_x:
                             image.Source = Images.Shit_head;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)2:
+                        case BoardValues.Head_y:
                             image.Source = Images.Shit_head;
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)3:
+                        case BoardValues.Body_x:
                             image.Source = Images.Shit_body;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)4:
+                        case BoardValues.Body_y:
                             image.Source = Images.Shit_body;
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)5:
+                        case BoardValues.Tail_x:
                             image.Source = Images.Shit_tail;
                             images[x, y] = image;
                             Board.Children.Add(image);
                             break;
-                        case (BoardValues)6:
+                        case BoardValues.Tail_y:
                             image.Source = Images.Shit_tail;
                             image.RenderTransformOrigin = new Point(0.5, 0.5);
                             image.RenderTransform = rotateTransform;
@@ -114,45 +114,45 @@ namespace Battleshit
 
         private void DrawBoard(Image[,] boardImages, BoardValues[,] boardValues)
         {
-            RotateTransform rotateTransform = new RotateTransform(90);
+            RotateTransform rotateTransform = new(90);
 
-            for (int x = 0; x < rows; x++)
+            for (int x = 0; x < this.rows; x++)
             {
-                for (int y = 0; y < cols; y++)
+                for (int y = 0; y < this.cols; y++)
                 {
                     switch (boardValues[x, y])
                     {
-                        case 0:
+                        case BoardValues.Empty:
                             boardImages[x, y].Source = Images.Shit_bg;
                             break;
-                        case (BoardValues)1:
+                        case BoardValues.Head_x:
                             boardImages[x, y].Source = Images.Shit_head;
                             break;
-                        case (BoardValues)2:
+                        case BoardValues.Head_y:
                             boardImages[x, y].Source = Images.Shit_head;
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
-                        case (BoardValues)3:
+                        case BoardValues.Body_x:
                             boardImages[x, y].Source = Images.Shit_body;
                             break;
-                        case (BoardValues)4:
+                        case BoardValues.Body_y:
                             boardImages[x, y].Source = Images.Shit_body;
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
-                        case (BoardValues)5:
+                        case BoardValues.Tail_x:
                             boardImages[x, y].Source = Images.Shit_tail;
                             break;
-                        case (BoardValues)6:
+                        case BoardValues.Tail_y:
                             boardImages[x, y].Source = Images.Shit_tail;
                             boardImages[x, y].RenderTransformOrigin = new Point(0.5, 0.5);
                             boardImages[x, y].RenderTransform = rotateTransform;
                             break;
-                        case (BoardValues)7:
+                        case BoardValues.Destroyed:
                             boardImages[x, y].Source = Images.Shit_bg_miss;
                             break;
-                        case (BoardValues)8:
+                        case BoardValues.Miss:
                             boardImages[x, y].Source = Images.Shit_bg_miss;
                             break;
                         default:
@@ -174,28 +174,28 @@ namespace Battleshit
             }
         }
 
-        private void highlightElement(object sender, MouseEventArgs e)
+        private void HighlightElement(object sender, MouseEventArgs e)
         {
             Image img = sender as Image;
             img.Opacity = 0.5;
             
         }
 
-        private void unhighlightElement(object sender, MouseEventArgs e)
+        private void UnhighlightElement(object sender, MouseEventArgs e)
         {
             Image img = sender as Image;
             img.Opacity = 1;
         }
 
-        private async void playerTurnClick(object sender, RoutedEventArgs e)
+        private async void PlayerTurnClick(object sender, RoutedEventArgs e)
         {
             // Disable click
-            if (!clickable)
+            if (!this.clickable)
             {
                 return;
             }
 
-            clickable = false;
+            this.clickable = false;
 
             Image img = sender as Image;
             UniformGrid parent = (UniformGrid)img.Parent;
@@ -206,7 +206,7 @@ namespace Battleshit
             int y = index % 10;
 
             // check if shit tried already
-            if ((gamestate.Board2[x, y] == BoardValues.Destroyed) || (gamestate.Board2[x, y] == BoardValues.Miss))
+            if ((this.gamestate.Board2[x, y] == BoardValues.Destroyed) || (this.gamestate.Board2[x, y] == BoardValues.Miss))
             {
                 return;
             }
@@ -215,12 +215,12 @@ namespace Battleshit
             {
                 // Mark as clicked
                 gamestate.Board2[x, y] = BoardValues.Destroyed;
-                DrawBoard(boardImages2, gamestate.Board2);
+                DrawBoard(this.boardImages2, this.gamestate.Board2);
             } else
             {
                 // Mark as clicked
                 gamestate.Board2[x, y] = BoardValues.Miss;
-                DrawBoard(boardImages2, gamestate.Board2);
+                DrawBoard(this.boardImages2, this.gamestate.Board2);
             }
 
             // Check if player won
@@ -256,21 +256,21 @@ namespace Battleshit
             {
                 // Mark as clicked
                 gamestate.Board1[rnd_x, rnd_y] = BoardValues.Destroyed;
-                DrawBoard(boardImages1, gamestate.Board1);
+                DrawBoard(this.boardImages1, this.gamestate.Board1);
             } else
             {
                 // Mark as clicked
                 gamestate.Board1[rnd_x, rnd_y] = BoardValues.Miss;
-                DrawBoard(boardImages1, gamestate.Board1);
+                DrawBoard(this.boardImages1, this.gamestate.Board1);
             }
 
             // Check if computer won
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < this.rows; i++)
             {
-                for (int j = 0; j < cols; j++)
+                for (int j = 0; j < this.cols; j++)
                 {
                     // exist a shit
-                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)gamestate.Board1[i, j]))
+                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)this.gamestate.Board1[i, j]))
                     {
                         goto continueGame2;
                     }
@@ -283,7 +283,7 @@ namespace Battleshit
         continueGame2:
 
             // Enable Click
-            clickable = true;
+            this.clickable = true;
             GameStatusLabel.Content = "Your turn";
 
         }
