@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Battleshit"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="BackgroundColor">#132311</SolidColorBrush>
-        <SolidColorBrush x:Key="BoardBackgroundColor">#323432</SolidColorBrush>
+        <SolidColorBrush x:Key="BackgroundColor">#525252</SolidColorBrush>
+        <SolidColorBrush x:Key="BoardBackgroundColor">#546570</SolidColorBrush>
     </Application.Resources>
 </Application>
