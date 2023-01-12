@@ -231,158 +231,9 @@ namespace Battleshit
             // Check if is shit
             if (this.gamestate.Board2[y, x] != BoardValues.Empty)
             {
-                // Check if entire shit has sunk
-                int i = 1;
-                switch (this.gamestate.Board2[y, x])
-                {
-                    case BoardValues.Head_x:
-                        while ((x + i) < this.cols)
-                        {
-                            if (this.gamestate.Board2[y, x + i] == BoardValues.Empty || this.gamestate.Board2[y, x + i] == BoardValues.Miss)
-                            {
-                                break;
-                            } else if (this.gamestate.Board2[y, x + i] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y, x + j] = BoardValues.Sunk;
-                        }
-                        break;
-                    case BoardValues.Head_y:
-                        while ((y + i) < this.rows)
-                        {
-                            if (this.gamestate.Board2[y + i, x] == BoardValues.Empty || this.gamestate.Board2[y + i, x] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y + i, x] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y + j, x] = BoardValues.Sunk;
-                        }
-                        break;
-                    case BoardValues.Body_x:
-                        while ((x + i) < this.cols)
-                        {
-                            if (this.gamestate.Board2[y, x + i] == BoardValues.Empty || this.gamestate.Board2[y, x + i] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y, x + i] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y, x + j] = BoardValues.Sunk;
-                        }
-                        while ((x - i) >= 0)
-                        {
-                            if (this.gamestate.Board2[y, x - i] == BoardValues.Empty || this.gamestate.Board2[y, x - i] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y, x - i] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y, x - j] = BoardValues.Sunk;
-                        }
-                        break;
-                    case BoardValues.Body_y:
-                        while ((y + i) < this.rows)
-                        {
-                            if (this.gamestate.Board2[y + i, x] == BoardValues.Empty || this.gamestate.Board2[y + i, x] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y + i, x] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y + j, x] = BoardValues.Sunk;
-                        }
-                        while ((y - i) >= 0)
-                        {
-                            if (this.gamestate.Board2[y - i, x] == BoardValues.Empty || this.gamestate.Board2[y - i, x] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y - i, x] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y - j, x] = BoardValues.Sunk;
-                        }
-                        break;
-                    case BoardValues.Tail_x:
-                        while ((x - i) >= 0)
-                        {
-                            if (this.gamestate.Board2[y, x - i] == BoardValues.Empty || this.gamestate.Board2[y, x - i] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y, x - i] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y, x - j] = BoardValues.Sunk;
-                        }
-                        break;
-                    case BoardValues.Tail_y:
-                        while ((y - i) >= 0)
-                        {
-                            if (this.gamestate.Board2[y - i, x] == BoardValues.Empty || this.gamestate.Board2[y - i, x] == BoardValues.Miss)
-                            {
-                                break;
-                            }
-                            else if (this.gamestate.Board2[y - i, x] != BoardValues.Destroyed)
-                            {
-                                goto notSunk;
-                            }
-                            i++;
-                        }
-                        for (int j = 0; j < i; j++)
-                        {
-                            this.gamestate.Board2[y - j, x] = BoardValues.Sunk;
-                        }
-                        break;
-                    default:
-                        goto notSunk;
-                }
-                goto Sunk;
-            notSunk:
-                Debug.WriteLine("Not");
                 // Mark as clicked
-                this.gamestate.Board2[y, x] = BoardValues.Destroyed;
-            Sunk:
+                CheckSunk(this.gamestate.Board2, y, x);
+                // Check if entire shit has sunk
                 DrawBoard(this.boardImages2, this.gamestate.Board2, false);
             }
             else
@@ -393,22 +244,12 @@ namespace Battleshit
             }
 
             // Check if player won
-            for (int i = 0; i < rows; i++)
+            if (CheckWon(this.gamestate.Board2))
             {
-                for (int j = 0; j < cols; j++)
-                {
-                    // exist a shit
-                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)this.gamestate.Board2[i, j]))
-                    {
-                        goto continueToComputerTurn;
-                    }
-                }
+                GameStatusLabel.Content = "You won!";
+                return;
             }
-
-            GameStatusLabel.Content = "You won!";
-            return;
-
-        continueToComputerTurn:
+            
             // Do computer turn
             GameStatusLabel.Content = "Wait for computer...";
             await Task.Delay(1000);
@@ -421,14 +262,48 @@ namespace Battleshit
                 for (int j = 0; j < this.cols; j++)
                 {
                     // Check if shit at position is destroyed and not sunken
-                    if (gamestate.Board1[i, j] == BoardValues.Destroyed && gamestate.Board1[i, j] != BoardValues.Sunk)
+                    if (gamestate.Board1[i, j] == BoardValues.Destroyed)
                     {
+                        /*int p = 1;
+                        // Check if any adjacent direction is also destroyed
+                        while (j + p < this.cols)
+                        {
+                            if (gamestate.Board1[i, j + p] != BoardValues.Destroyed)
+                            {
+                                break;
+                            }
+                            p++;
+                        }
+
+
+
+                        // If not pick a random direction thats empty
+                        int rnd_d = random.Next(0, 4);
+                        switch (rnd_d)
+                        {
+                            case 0:
+                                j--;
+                                break;
+                            case 1:
+                                i++;
+                                break;
+                            case 2:
+                                j++;
+                                break;
+                            case 3:
+                                i--;
+                                break;
+                        }
+                        while (this.gamestate.Board1[i, j] != BoardValues.Empty)
+                        {
+                            rnd_d = random.Next(0, 4);
+                        }*/
                     }
                 }
             }
 
             // Check if shit tried already
-            while ((this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Destroyed) || (this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Miss))
+            while ((this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Destroyed) || (this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Miss) || (this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Sunk))
             {
                 rnd_x = random.Next(0, cols);
                 rnd_y = random.Next(0, rows);
@@ -447,27 +322,183 @@ namespace Battleshit
             }
 
             // Check if computer won
-            for (int i = 0; i < this.rows; i++)
+            if (CheckWon(this.gamestate.Board1))
             {
-                for (int j = 0; j < this.cols; j++)
-                {
-                    // exist a shit
-                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)this.gamestate.Board1[i, j]))
-                    {
-                        goto continueGame;
-                    }
-                }
+                GameStatusLabel.Content = "You lost!";
+                return;
             }
-
-            GameStatusLabel.Content = "You lost!";
-            return;
-
-        continueGame:
 
             // Enable Click
             this.clickable = true;
             GameStatusLabel.Content = "Your turn";
 
+        }
+
+        private bool CheckWon(BoardValues[,] Board)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    // exist a shit
+                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)Board[i, j]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void CheckSunk(BoardValues[,] Board, int y, int x)
+        {
+            int i = 1;
+            int c = 1;
+            switch (Board[y, x])
+            {
+                case BoardValues.Head_x:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((x + i) < this.cols)
+                    {
+                        if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y, x + i] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    for (int j = 0; j < i; j++)
+                    {
+                        Board[y, x + j] = BoardValues.Sunk;
+                    }
+                    break;
+                case BoardValues.Head_y:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((y + i) < this.rows)
+                    {
+                        if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y + i, x] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    for (int j = 0; j < i; j++)
+                    {
+                        Board[y + j, x] = BoardValues.Sunk;
+                    }
+                    break;
+                case BoardValues.Body_x:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((x + i) < this.cols)
+                    {
+                        if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y, x + i] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    i--;
+                    while ((x + i) - c >= 0)
+                    {
+                        if (Board[y, (x + i) - c] == BoardValues.Empty || Board[y, (x + i) - c] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y, (x + i) - c] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        c++;
+                    }
+                    for (int j = 0; j < c; j++)
+                    {
+                        Board[y, x + i - j] = BoardValues.Sunk;
+                    }
+                    break;
+                case BoardValues.Body_y:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((y + i) < this.rows)
+                    {
+                        if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y + i, x] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    i--;
+                    while (((y + i) - c) >= 0)
+                    {
+                        if (Board[(y + i) - c, x] == BoardValues.Empty || Board[(y + i) - c, x] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[(y + i) - c, x] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        c++;
+                    }
+                    for (int j = 0; j < c; j++)
+                    {
+                        Board[y + i - j, x] = BoardValues.Sunk;
+                    }
+                    break;
+                case BoardValues.Tail_x:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((x - i) >= 0)
+                    {
+                        if (Board[y, x - i] == BoardValues.Empty || Board[y, x - i] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y, x - i] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    for (int j = 0; j < i; j++)
+                    {
+                        Board[y, x - j] = BoardValues.Sunk;
+                    }
+                    break;
+                case BoardValues.Tail_y:
+                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    while ((y - i) >= 0)
+                    {
+                        if (Board[y - i, x] == BoardValues.Empty || Board[y - i, x] == BoardValues.Miss)
+                        {
+                            break;
+                        }
+                        else if (Board[y - i, x] != BoardValues.Destroyed)
+                        {
+                            return;
+                        }
+                        i++;
+                    }
+                    for (int j = 0; j < i; j++)
+                    {
+                        Board[y - j, x] = BoardValues.Sunk;
+                    }
+                    break;
+                default:
+                    return;
+            }
         }
 
         private void RandomizeBoard_btn(object sender, EventArgs e)
