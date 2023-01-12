@@ -10,6 +10,7 @@
         Tail_x = 5,
         Tail_y = 6,
         Destroyed = 7,
-        Miss = 8
+        Miss = 8,
+        Sunk = 9,
     }
 }
