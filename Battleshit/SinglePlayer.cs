@@ -19,6 +19,7 @@ namespace Battleshit
         private readonly int rows = 10, cols = 10;
         private readonly Image[,] boardImages1;
         private readonly Image[,] boardImages2;
+        private BoardValues[,] hiddenBoard;
 
         private readonly Random random = new Random();
 
@@ -31,6 +32,9 @@ namespace Battleshit
             this.boardImages1 = SetupBoard(Board1, gamestate.Board1, true);
             this.boardImages2 = SetupBoard(Board2, gamestate.Board2, false);
 
+            // create hidden empty board for computer
+            this.hiddenBoard = new BoardValues[this.rows, this.cols];
+
             GameStatusLabel.Content = "Your turn to fire!";
         }
 
@@ -42,7 +46,6 @@ namespace Battleshit
 
             RotateTransform rotateTransform = new(90);
 
-            Print2DArray(boardValues);
 
             for (int y = 0; y < this.rows; y++)
             {
@@ -232,7 +235,7 @@ namespace Battleshit
             if (this.gamestate.Board2[y, x] != BoardValues.Empty)
             {
                 // Mark as clicked
-                CheckSunk(this.gamestate.Board2, y, x);
+                ApplySunk(this.gamestate.Board2, y, x);
                 // Check if entire shit has sunk
                 DrawBoard(this.boardImages2, this.gamestate.Board2, false);
             }
@@ -249,7 +252,7 @@ namespace Battleshit
                 GameStatusLabel.Content = "You won!";
                 return;
             }
-            
+
             // Do computer turn
             GameStatusLabel.Content = "Wait for computer...";
             await Task.Delay(1000);
@@ -262,62 +265,112 @@ namespace Battleshit
                 for (int j = 0; j < this.cols; j++)
                 {
                     // Check if shit at position is destroyed and not sunken
-                    if (gamestate.Board1[i, j] == BoardValues.Destroyed)
+                    if (this.hiddenBoard[i, j] == BoardValues.Destroyed)
                     {
-                        /*int p = 1;
-                        // Check if any adjacent direction is also destroyed
-                        while (j + p < this.cols)
+                        var dir = FindShitDir(this.hiddenBoard, i, j);
+                        if (dir != null)
                         {
-                            if (gamestate.Board1[i, j + p] != BoardValues.Destroyed)
+                            int c_y = 0;
+                            int c_x = 0;
+                            if ((bool)dir)  // vertical
                             {
-                                break;
+                                // find next point to choose along vertical
+                                // up
+                                while (i + c_y >= 0 && this.hiddenBoard[i + c_y, j] != BoardValues.Empty && this.hiddenBoard[i + c_y, j] == BoardValues.Destroyed)
+                                {
+                                    c_y--;
+                                }
+                                if (i + c_y < 0 || this.hiddenBoard[i + c_y, j] != BoardValues.Empty)
+                                {
+                                    c_y++;
+                                    // down
+                                    while (i + c_y < rows && this.hiddenBoard[i + c_y, j] != BoardValues.Empty && this.hiddenBoard[i + c_y, j] == BoardValues.Destroyed)
+                                    {
+                                        c_y++;
+                                    }
+                                }
+                            } else  // horizontal
+                            {
+                                // find next point to choose along horizontal
+                                // left
+                                while (j + c_x >= 0 && this.hiddenBoard[i, j + c_x] != BoardValues.Empty && this.hiddenBoard[i, j + c_x] == BoardValues.Destroyed)
+                                {
+                                    c_x--;
+                                }
+                                if (j + c_x < 0 || this.hiddenBoard[i, j + c_x] != BoardValues.Empty)
+                                {
+                                    c_x++;
+                                    // right
+                                    while (j + c_x < cols && this.hiddenBoard[i, j + c_x] != BoardValues.Empty && this.hiddenBoard[i, j + c_x] == BoardValues.Destroyed)
+                                    {
+                                        c_x++;
+                                    }
+                                }
                             }
-                            p++;
+
+                            rnd_x = j + c_x;
+                            rnd_y = i + c_y;
+                            goto cont;
                         }
 
 
-
-                        // If not pick a random direction thats empty
-                        int rnd_d = random.Next(0, 4);
-                        switch (rnd_d)
+                        // If no direction pick a direction thats empty
+                        if (j + 1 < cols && this.hiddenBoard[i, j + 1] == BoardValues.Empty)
                         {
-                            case 0:
-                                j--;
-                                break;
-                            case 1:
-                                i++;
-                                break;
-                            case 2:
-                                j++;
-                                break;
-                            case 3:
-                                i--;
-                                break;
+                            rnd_x = j + 1;
+                            rnd_y = i;
                         }
-                        while (this.gamestate.Board1[i, j] != BoardValues.Empty)
+                        else if (j - 1 >= 0 && this.hiddenBoard[i, j - 1] == BoardValues.Empty)
                         {
-                            rnd_d = random.Next(0, 4);
-                        }*/
+                            rnd_x = j - 1;
+                            rnd_y = i;
+                        }
+                        else if (i + 1 < rows && this.hiddenBoard[i + 1, j] == BoardValues.Empty)
+                        {
+                            rnd_x = j;
+                            rnd_y = i + 1;
+                        }
+                        else if (i - 1 >= 0 && this.hiddenBoard[i - 1, j] == BoardValues.Empty)
+                        {
+                            rnd_x = j;
+                            rnd_y = i - 1;
+                        }
+                        goto cont;
                     }
                 }
             }
 
+        cont:
             // Check if shit tried already
-            while ((this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Destroyed) || (this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Miss) || (this.gamestate.Board1[rnd_y, rnd_x] == BoardValues.Sunk))
+            while ((this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Destroyed) || (this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Miss) || (this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Sunk))
             {
                 rnd_x = random.Next(0, cols);
                 rnd_y = random.Next(0, rows);
             }
+            // check if its shit
             if (this.gamestate.Board1[rnd_y, rnd_x] != BoardValues.Empty)
             {
                 // Mark as clicked
-                this.gamestate.Board1[rnd_y, rnd_x] = BoardValues.Destroyed;
+                ApplySunk(this.gamestate.Board1, rnd_y, rnd_x);
+                this.hiddenBoard[rnd_y, rnd_x] = BoardValues.Destroyed;
+                // copy sunks to hidden
+                for (int i= 0; i < rows; i++)
+                {
+                    for (int j = 0; j < cols; j++)
+                    {
+                        if (this.gamestate.Board1[i, j] == BoardValues.Sunk)
+                        {
+                            this.hiddenBoard[i, j] = BoardValues.Sunk;
+                        }
+                    }
+                }
                 DrawBoard(this.boardImages1, this.gamestate.Board1, true);
             }
             else
             {
                 // Mark as clicked
                 this.gamestate.Board1[rnd_y, rnd_x] = BoardValues.Miss;
+                this.hiddenBoard[rnd_y, rnd_x] = BoardValues.Miss;
                 DrawBoard(this.boardImages1, this.gamestate.Board1, true);
             }
 
@@ -332,6 +385,31 @@ namespace Battleshit
             this.clickable = true;
             GameStatusLabel.Content = "Your turn";
 
+        }
+
+        // Find orientation of shit
+        // True = vertical
+        private bool? FindShitDir(BoardValues[,] Board, int i, int j)
+        {
+            // Check if any adjacent direction is also destroyed
+            if (j + 1 < cols && Board[i, j + 1] == BoardValues.Destroyed)
+            {
+                return false;
+            }
+            else if (j - 1 >= 0 && Board[i, j - 1] == BoardValues.Destroyed)
+            {
+                return false;
+            }
+            else if (i + 1 < rows && Board[i + 1, j] == BoardValues.Destroyed)
+            {
+                return true;
+            }
+            else if (i - 1 >= 0 && Board[i - 1, j] == BoardValues.Destroyed)
+            {
+                return true;
+            }
+
+            return null;
         }
 
         private bool CheckWon(BoardValues[,] Board)
@@ -350,14 +428,14 @@ namespace Battleshit
             return true;
         }
 
-        private void CheckSunk(BoardValues[,] Board, int y, int x)
+        private void ApplySunk(BoardValues[,] Board, int y, int x)
         {
             int i = 1;
             int c = 1;
             switch (Board[y, x])
             {
                 case BoardValues.Head_x:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((x + i) < this.cols)
                     {
                         if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
@@ -376,7 +454,7 @@ namespace Battleshit
                     }
                     break;
                 case BoardValues.Head_y:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((y + i) < this.rows)
                     {
                         if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
@@ -395,7 +473,7 @@ namespace Battleshit
                     }
                     break;
                 case BoardValues.Body_x:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((x + i) < this.cols)
                     {
                         if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
@@ -427,7 +505,7 @@ namespace Battleshit
                     }
                     break;
                 case BoardValues.Body_y:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((y + i) < this.rows)
                     {
                         if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
@@ -459,7 +537,7 @@ namespace Battleshit
                     }
                     break;
                 case BoardValues.Tail_x:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((x - i) >= 0)
                     {
                         if (Board[y, x - i] == BoardValues.Empty || Board[y, x - i] == BoardValues.Miss)
@@ -478,7 +556,7 @@ namespace Battleshit
                     }
                     break;
                 case BoardValues.Tail_y:
-                    this.gamestate.Board2[y, x] = BoardValues.Destroyed;
+                    Board[y, x] = BoardValues.Destroyed;
                     while ((y - i) >= 0)
                     {
                         if (Board[y - i, x] == BoardValues.Empty || Board[y - i, x] == BoardValues.Miss)
