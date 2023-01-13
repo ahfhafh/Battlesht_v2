@@ -19,8 +19,13 @@
 
         <UniformGrid x:Name="Board2"
                     Background="{StaticResource BoardBackgroundColor}" Margin="0,117,0,0" HorizontalAlignment="Center" Width="400" Height="400" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label x:Name="GameStatusLabel" Content="Label" HorizontalAlignment="Left" Margin="528,46,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="224" Foreground="White" FontFamily="Britannic Bold" FontSize="20" HorizontalContentAlignment="Center"/>
+        <Label x:Name="GameStatusLabel" Content="Label" HorizontalAlignment="Left" Margin="528,46,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="224" Foreground="White" FontFamily="Britannic Bold" FontSize="48" HorizontalContentAlignment="Center" Panel.ZIndex="99"/>
         <Button Content="Random" HorizontalAlignment="Center" Margin="0,542,0,0" VerticalAlignment="Top" Height="30" Width="80" Click="RandomizeBoard_btn"/>
-    </Grid>
 
+        <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Border Background="Black"
+            Opacity="0.4"/>
+            <Button Content="Restart" HorizontalAlignment="Left" Margin="548,360,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="60" Width="184" Click="Restart_btn_click"/>
+        </Grid>
+    </Grid>
 </Page>

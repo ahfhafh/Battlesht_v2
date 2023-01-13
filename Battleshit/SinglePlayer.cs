@@ -250,6 +250,7 @@ namespace Battleshit
             if (CheckWon(this.gamestate.Board2))
             {
                 GameStatusLabel.Content = "You won!";
+                Overlay.Visibility = Visibility.Visible;
                 return;
             }
 
@@ -433,6 +434,7 @@ namespace Battleshit
             if (CheckWon(this.gamestate.Board1))
             {
                 GameStatusLabel.Content = "You lost!";
+                Overlay.Visibility = Visibility.Visible;
                 return;
             }
 
@@ -639,6 +641,23 @@ namespace Battleshit
             this.gamestate.RandomizeBoard(this.gamestate.Board1, this.gamestate.availableShits1);
             DrawBoard(this.boardImages1, this.gamestate.Board1, true);
         }
+
+        private void Restart_btn_click(object sender, EventArgs e)
+        {
+            this.gamestate = new Gamestate(rows, cols);
+            this.gamestate.RandomizeBoard(this.gamestate.Board1, this.gamestate.availableShits1);
+            this.gamestate.RandomizeBoard(this.gamestate.Board2, this.gamestate.availableShits2);
+            DrawBoard(this.boardImages1, this.gamestate.Board1, true);
+            DrawBoard(this.boardImages2, this.gamestate.Board2, false);
+
+            // create hidden empty board for computer
+            this.hiddenBoard = new BoardValues[this.rows, this.cols];
+
+            GameStatusLabel.Content = "Your turn to fire!";
+            Overlay.Visibility = Visibility.Hidden;
+            this.clickable = true;
+        }
+        
 
         /*private void Shit_MLButtonDown(object sender, MouseButtonEventArgs e)
         {
