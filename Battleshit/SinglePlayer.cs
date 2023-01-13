@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -24,6 +25,7 @@ namespace Battleshit
         private readonly Random random = new Random();
 
         private bool clickable = true;
+        private bool gameStarted = false;
 
         public SinglePlayer()
         {
@@ -207,12 +209,19 @@ namespace Battleshit
         }
 
         // Process a turn when player clicks
-        private void PlayerTurnClick(object sender, RoutedEventArgs e)
+        private async void PlayerTurnClick(object sender, RoutedEventArgs e)
         {
             // Disable click
             if (!this.clickable)
             {
                 return;
+            }
+            
+            // Disable random btn
+            if (!gameStarted)
+            {
+                gameStarted = true;
+                this.RandomBtn.IsEnabled = false;
             }
 
             this.clickable = false;
@@ -256,6 +265,7 @@ namespace Battleshit
 
             // Do computer turn
             GameStatusLabel.Content = "Wait for computer...";
+            await Task.Delay(500);
             int rnd_x = random.Next(0, cols);
             int rnd_y = random.Next(0, rows);
 
@@ -656,6 +666,8 @@ namespace Battleshit
             GameStatusLabel.Content = "Your turn to fire!";
             Overlay.Visibility = Visibility.Hidden;
             this.clickable = true;
+            gameStarted = false;
+            this.RandomBtn.IsEnabled = true;
         }
         
 
