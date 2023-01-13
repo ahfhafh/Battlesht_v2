@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -207,7 +207,7 @@ namespace Battleshit
         }
 
         // Process a turn when player clicks
-        private async void PlayerTurnClick(object sender, RoutedEventArgs e)
+        private void PlayerTurnClick(object sender, RoutedEventArgs e)
         {
             // Disable click
             if (!this.clickable)
@@ -255,7 +255,6 @@ namespace Battleshit
 
             // Do computer turn
             GameStatusLabel.Content = "Wait for computer...";
-            await Task.Delay(1000);
             int rnd_x = random.Next(0, cols);
             int rnd_y = random.Next(0, rows);
 
@@ -267,7 +266,7 @@ namespace Battleshit
                     // Check if shit at position is destroyed and not sunken
                     if (this.hiddenBoard[i, j] == BoardValues.Destroyed)
                     {
-                        var dir = FindShitDir(this.hiddenBoard, i, j);
+                        var dir = FindShitDir(this.hiddenBoard, i, j, BoardValues.Destroyed);
                         if (dir != null)
                         {
                             int c_y = 0;
@@ -289,7 +288,8 @@ namespace Battleshit
                                         c_y++;
                                     }
                                 }
-                            } else  // horizontal
+                            }
+                            else  // horizontal
                             {
                                 // find next point to choose along horizontal
                                 // left
@@ -340,6 +340,61 @@ namespace Battleshit
                 }
             }
 
+            // If a destroyed position can't be found
+            // Pick a spot thats most likely to have a shit
+            // Search by row
+            int longest_empty = 0;
+            List<Point> potential_spots = new List<Point>();
+            for (int i = 0; i < rows; i++)
+            {
+                int c = 0;
+                for (int j = 0; j < cols - 1; j++)
+                {
+                    while ((j + c + 1 < cols) && (this.hiddenBoard[i, j] == BoardValues.Empty) && this.hiddenBoard[i, j + c + 1] == BoardValues.Empty && 
+                        (FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Destroyed) == null) && (FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Sunk) == null)) 
+                    { 
+                        c++; 
+                    }
+                    if (c > longest_empty) { longest_empty = c; potential_spots.Clear(); potential_spots.Add(new(i, j)); potential_spots.Add(new(i, j + c)); }
+                    else if (c == longest_empty) { potential_spots.Add(new(i, j)); potential_spots.Add(new(i, j + c)); }
+                    j += c;
+                    c = 0;
+                }
+            }
+            // Search by column
+            for (int j = 0; j < cols; j++)
+            {
+                int c = 0;
+                for (int i = 0; i < rows - 1; i++)
+                {
+                    while ((i + c + 1 < rows) && (this.hiddenBoard[i, j] == BoardValues.Empty) && this.hiddenBoard[i + c + 1, j] == BoardValues.Empty &&
+                        (FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Destroyed) == null) && (FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Sunk) == null)) 
+                    {
+                        c++;
+                    }
+                    if (c > longest_empty) { longest_empty = c; potential_spots.Clear(); potential_spots.Add(new(i, j)); potential_spots.Add(new(i + c, j)); }
+                    else if (c == longest_empty) { potential_spots.Add(new(i, j)); potential_spots.Add(new(i + c, j)); }
+                    i += c;
+                    c = 0;
+                }
+            }
+
+            // Debugging purposes
+            /*foreach (var z in potential_spots)
+            {
+                Debug.Write(z + " ");
+            }
+
+            Debug.WriteLine("");*/
+
+            // Select random interval
+            int indx = random.Next(0, potential_spots.Count / 2);
+            Point interval_start = potential_spots[indx * 2];
+            Point interval_end = potential_spots[(indx * 2) + 1];
+
+            rnd_y = random.Next((int)interval_start.X, (int)interval_end.X + 1);
+            rnd_x = random.Next((int)interval_start.Y, (int)interval_end.Y + 1);
+
         cont:
             // Check if shit tried already
             while ((this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Destroyed) || (this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Miss) || (this.hiddenBoard[rnd_y, rnd_x] == BoardValues.Sunk))
@@ -354,7 +409,7 @@ namespace Battleshit
                 ApplySunk(this.gamestate.Board1, rnd_y, rnd_x);
                 this.hiddenBoard[rnd_y, rnd_x] = BoardValues.Destroyed;
                 // copy sunks to hidden
-                for (int i= 0; i < rows; i++)
+                for (int i = 0; i < rows; i++)
                 {
                     for (int j = 0; j < cols; j++)
                     {
@@ -389,22 +444,22 @@ namespace Battleshit
 
         // Find orientation of shit
         // True = vertical
-        private bool? FindShitDir(BoardValues[,] Board, int i, int j)
+        private bool? FindShitDir(BoardValues[,] Board, int y, int x, BoardValues BoardValue)
         {
-            // Check if any adjacent direction is also destroyed
-            if (j + 1 < cols && Board[i, j + 1] == BoardValues.Destroyed)
+            // Check if any adjacent direction is the specified boardvalue
+            if (x + 1 < cols && Board[y, x + 1] == BoardValue)
             {
                 return false;
             }
-            else if (j - 1 >= 0 && Board[i, j - 1] == BoardValues.Destroyed)
+            else if (x - 1 >= 0 && Board[y, x - 1] == BoardValue)
             {
                 return false;
             }
-            else if (i + 1 < rows && Board[i + 1, j] == BoardValues.Destroyed)
+            else if (y + 1 < rows && Board[y + 1, x] == BoardValue)
             {
                 return true;
             }
-            else if (i - 1 >= 0 && Board[i - 1, j] == BoardValues.Destroyed)
+            else if (y - 1 >= 0 && Board[y - 1, x] == BoardValue)
             {
                 return true;
             }
