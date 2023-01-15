@@ -5,7 +5,6 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
-    <PublishSingleFile>true</PublishSingleFile>
   <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   <ApplicationIcon>toiletpaper_119528.ico</ApplicationIcon>
   <FileVersion>1.0.0.1</FileVersion>
@@ -17,10 +16,6 @@
     <None Remove="Assets\shit_bg_miss.png" />
     <None Remove="Assets\shit_destroyed.png" />
     <None Remove="Assets\shit_sunk.png" />
-    <None Remove="Assets\stool_2.png" />
-    <None Remove="Assets\stool_3.png" />
-    <None Remove="Assets\stool_4.png" />
-    <None Remove="Assets\stool_5.png" />
     <None Remove="Assets\stool_head.png" />
     <None Remove="Assets\stool_mid.png" />
     <None Remove="Assets\stool_tail.png" />
@@ -35,10 +30,6 @@
     <Resource Include="Assets\shit_bg_miss.png" />
     <Resource Include="Assets\shit_destroyed.png" />
     <Resource Include="Assets\shit_sunk.png" />
-    <Resource Include="Assets\stool_2.png" />
-    <Resource Include="Assets\stool_3.png" />
-    <Resource Include="Assets\stool_4.png" />
-    <Resource Include="Assets\stool_5.png" />
     <Resource Include="Assets\stool_head.png" />
     <Resource Include="Assets\stool_mid.png" />
     <Resource Include="Assets\stool_tail.png" />
