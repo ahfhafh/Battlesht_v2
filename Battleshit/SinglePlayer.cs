@@ -37,7 +37,8 @@ namespace Battleshit
             // create hidden empty board for computer
             this.hiddenBoard = new BoardValues[this.rows, this.cols];
 
-            GameStatusLabel.Content = "Your turn to fire!";
+            GameStatusLabel.Foreground = Brushes.Red;
+            GameStatusLabel.Content = "Fire to start game!";
         }
 
         public Image[,] SetupBoard(UniformGrid Board, BoardValues[,] boardValues, bool isPlayerBoard)
@@ -264,8 +265,11 @@ namespace Battleshit
             }
 
             // Do computer turn
+            Board1Overlay.Opacity = 1;
+            Board2Overlay.Opacity = 0.7;
+            GameStatusLabel.Foreground = Brushes.White;
             GameStatusLabel.Content = "Wait for computer...";
-            await Task.Delay(500);
+            await Task.Delay(random.Next(500, 2000));
             int rnd_x = random.Next(0, cols);
             int rnd_y = random.Next(0, rows);
 
@@ -443,6 +447,7 @@ namespace Battleshit
             // Check if computer won
             if (CheckWon(this.gamestate.Board1))
             {
+                GameStatusLabel.Foreground = Brushes.White;
                 GameStatusLabel.Content = "You lost!";
                 Overlay.Visibility = Visibility.Visible;
                 return;
@@ -450,6 +455,9 @@ namespace Battleshit
 
             // Enable Click
             this.clickable = true;
+            GameStatusLabel.Foreground = Brushes.Red;
+            Board1Overlay.Opacity = 0.7;
+            Board2Overlay.Opacity = 1;
             GameStatusLabel.Content = "Your turn";
 
         }

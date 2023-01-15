@@ -14,13 +14,30 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <UniformGrid x:Name="Board1"
-                    Background="{StaticResource BoardBackgroundColor}" Margin="0,150,0,0" HorizontalAlignment="Center" Width="400" Height="400" VerticalAlignment="Top"/>
-
-        <UniformGrid x:Name="Board2"
-                    Background="{StaticResource BoardBackgroundColor}" Margin="0,150,0,0" HorizontalAlignment="Center" Width="400" Height="400" VerticalAlignment="Top" Grid.Column="1"/>
         <Label x:Name="GameStatusLabel" Content="Label" HorizontalAlignment="Left" Margin="280,36,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="719" Foreground="White" FontFamily="Britannic Bold" FontSize="48" HorizontalContentAlignment="Center" Panel.ZIndex="99"/>
+        <Border x:Name="Board1Overlay" BorderBrush="Black" BorderThickness="2,2,2,2" Width="404" Height="404" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,148,0,0" RenderOptions.EdgeMode="Aliased">
+            <UniformGrid x:Name="Board1"
+                    Background="{StaticResource BoardBackgroundColor}" 
+                    HorizontalAlignment="Center"
+                    Width="400"
+                    Height="400"
+                    VerticalAlignment="Center" 
+                    SnapsToDevicePixels="True"
+                    RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Border>
         <Button x:Name="RandomBtn" Content="Random" HorizontalAlignment="Center" Margin="0,575,0,0" VerticalAlignment="Top" Height="30" Width="80" Click="RandomizeBoard_btn"/>
+        
+        <Border x:Name="Board2Overlay" BorderBrush="Black" BorderThickness="2,2,2,2" Width="404" Height="404" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,148,0,0" RenderOptions.EdgeMode="Aliased" Grid.Column="1">
+            <UniformGrid x:Name="Board2"
+                    Background="{StaticResource BoardBackgroundColor}" 
+                    HorizontalAlignment="Center" 
+                    Width="400" 
+                    Height="400" 
+                    VerticalAlignment="Center" 
+                    Grid.Column="1"
+                    SnapsToDevicePixels="True"
+                    RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Border>
 
         <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Hidden">
             <Border Background="Black"
