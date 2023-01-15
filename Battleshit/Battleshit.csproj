@@ -7,6 +7,7 @@
     <UseWPF>true</UseWPF>
     <PublishSingleFile>true</PublishSingleFile>
   <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  <ApplicationIcon>toiletpaper_119528.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,10 @@
     <None Remove="Assets\stool_head.png" />
     <None Remove="Assets\stool_mid.png" />
     <None Remove="Assets\stool_tail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="toiletpaper_119528.ico" />
   </ItemGroup>
 
   <ItemGroup>
