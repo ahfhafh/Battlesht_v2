@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Battleshit"
       mc:Ignorable="d" 
-      Title="MainWindow" Height="720" Width="1280"
+      Title="Battlesh*t" Height="720" Width="1280"
       ResizeMode="CanMinimize">
 
     <Grid>
