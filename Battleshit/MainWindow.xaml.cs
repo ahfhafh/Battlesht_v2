@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,14 +21,24 @@ namespace Battleshit
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MediaPlayer mediaPlayer = new MediaPlayer();
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Play_btn_Click(object sender, RoutedEventArgs e)
+        private async void Play_btn_Click(object sender, RoutedEventArgs e)
         {
+            await StartGameEffect();
             this.Content = new SinglePlayer();
+        }
+
+        private async Task StartGameEffect()
+        {
+            mediaPlayer.Open(new Uri("Assets/toilet-flushing.mp3"));
+            mediaPlayer.Play();
+            await Task.Delay(3000);
         }
 
         private void Exit_btn_Click(object sender, RoutedEventArgs e)

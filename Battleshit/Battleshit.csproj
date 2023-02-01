@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
   <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
@@ -19,6 +19,7 @@
     <None Remove="Assets\stool_head.png" />
     <None Remove="Assets\stool_mid.png" />
     <None Remove="Assets\stool_tail.png" />
+    <None Remove="Assets\wave_bg.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\long_stool.png" />
+    <Resource Include="Assets\wave_bg.png" />
   </ItemGroup>
 
 </Project>
