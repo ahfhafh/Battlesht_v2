@@ -12,6 +12,9 @@
         <Storyboard x:Key="Wave">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.RelativeTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="wave_rect" RepeatBehavior="Forever" From="0" To="1" Duration="0:0:2.5" />
         </Storyboard>
+        <Storyboard x:Key="Flush">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.RelativeTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="wave_rect" From="0" To="1" Duration="0:0:3" />
+        </Storyboard>
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -20,7 +23,13 @@
     </Window.Triggers>
 
     <Grid>
-        <Button Content="Play" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,263,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Play_btn_Click"/>
+        <Button Content="Play" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,263,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Play_btn_Click">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.Click">
+                    <BeginStoryboard Storyboard="{StaticResource Flush}"/>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
         <Button Content="Exit" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,384,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Exit_btn_Click"/>
 
         <Canvas>
@@ -44,14 +53,13 @@
                                 <ScaleTransform />
                                 <SkewTransform/>
                                 <RotateTransform/>
-                                <TranslateTransform Y="{Binding Value,ElementName=y}"  />
+                                <TranslateTransform/>
                             </TransformGroup>
                         </VisualBrush.RelativeTransform>
                     </VisualBrush>
                 </Rectangle.OpacityMask>
             </Rectangle>
-
-            <Slider x:Name="y" Width="200" Minimum="0" Maximum="1" Value="0"/>
+            
             <Slider x:Name="volume" Width="200" Minimum="0" Maximum="1" Value="0.5" Canvas.Left="1070" Canvas.Top="10" ValueChanged="ChangeMediaVolume"/>
         </Canvas>
     </Grid>

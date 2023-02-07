@@ -53,8 +53,4 @@
     <Resource Include="Assets\wave_bg.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
 </Project>

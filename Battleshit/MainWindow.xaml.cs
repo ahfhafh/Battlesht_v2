@@ -46,17 +46,7 @@ namespace Battleshit
         {
             flushPlayer.Open(new Uri("pack://siteoforigin:,,,/Assets/toilet-flushing.mp3"));
             flushPlayer.Play();
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += OnTimedEvent;
-            timer.Interval = TimeSpan.FromMilliseconds(10);
-            timer.IsEnabled = true;
             await Task.Delay(3000);
-            timer.Stop();
-        }
-
-        private void OnTimedEvent(object sender, EventArgs e)
-        {
-            y.Value += (double)0.007;
         }
 
         private void Exit_btn_Click(object sender, RoutedEventArgs e)
