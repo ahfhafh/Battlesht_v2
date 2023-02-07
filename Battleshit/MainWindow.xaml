@@ -31,7 +31,7 @@
                             <Grid x:Name="wave" Height="658" Canvas.Left="1304" Canvas.Top="46" Width="1280" Background="#00000000" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="{Binding Value,ElementName=amplitude}"/>
+                                    <RowDefinition Height="0"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
                                 <Path Fill="#FF82C6FF" Data="M12.5,1.6925709 C31.25,1.6925709 31.25,18.615654 50,18.615654 68.75,18.615654 68.75,1.6925709 87.5,1.6925709 87.499909,27.077196 87.5,27.077107 87.5,27.077107 63.28125,27.077136 12.5,27.077196 12.5,27.077196 12.5,27.077196 12.500094,27.077196 12.5,1.6925709 z" Stretch="Fill" Margin="0,106,0,0" Grid.RowSpan="2"/>
@@ -52,7 +52,7 @@
             </Rectangle>
 
             <Slider x:Name="y" Width="200" Minimum="0" Maximum="1" Value="0"/>
-            <Slider x:Name="amplitude" Width="200" Minimum="1" Maximum="800" Value="0" Canvas.Top="23"/>
+            <Slider x:Name="volume" Width="200" Minimum="0" Maximum="1" Value="0.5" Canvas.Left="1070" Canvas.Top="10" ValueChanged="ChangeMediaVolume"/>
         </Canvas>
     </Grid>
 </Window>

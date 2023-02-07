@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
   <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
@@ -16,9 +16,11 @@
     <None Remove="Assets\shit_bg_miss.png" />
     <None Remove="Assets\shit_destroyed.png" />
     <None Remove="Assets\shit_sunk.png" />
+    <None Remove="Assets\sound-bg.mp3" />
     <None Remove="Assets\stool_head.png" />
     <None Remove="Assets\stool_mid.png" />
     <None Remove="Assets\stool_tail.png" />
+    <None Remove="Assets\toilet-flushing.mp3" />
     <None Remove="Assets\wave_bg.png" />
   </ItemGroup>
 
@@ -31,6 +33,9 @@
     <Resource Include="Assets\shit_bg_miss.png" />
     <Resource Include="Assets\shit_destroyed.png" />
     <Resource Include="Assets\shit_sunk.png" />
+    <Content Include="Assets\sound-bg.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Assets\stool_head.png" />
     <Resource Include="Assets\stool_mid.png" />
     <Resource Include="Assets\stool_tail.png" />
@@ -42,7 +47,14 @@
 
   <ItemGroup>
     <Resource Include="Assets\long_stool.png" />
+    <Content Include="Assets\toilet-flushing.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Assets\wave_bg.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

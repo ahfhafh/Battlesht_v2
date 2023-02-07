@@ -19,8 +19,6 @@ namespace Battleshit
         public readonly static ImageSource Shit_body = LoadImage("stool_mid.png");
         public readonly static ImageSource Shit_tail = LoadImage("stool_tail.png");
 
-        internal static ImageSource image_name;
-
         private static ImageSource LoadImage(string filename)
         {
             return new BitmapImage(new Uri($"Assets/{filename}", UriKind.Relative));
