@@ -27,6 +27,8 @@ namespace Battleshit
         private bool clickable = true;
         private bool gameStarted = false;
 
+        private MediaPlayer bgPlayer = new MediaPlayer();
+
         public SinglePlayer()
         {
             InitializeComponent();
@@ -39,6 +41,13 @@ namespace Battleshit
 
             GameStatusLabel.Foreground = Brushes.Red;
             GameStatusLabel.Content = "Fire to start game!";
+
+            bgPlayer.Open(new Uri("pack://siteoforigin:,,,/Assets/sound-bg.mp3"));
+            bgPlayer.MediaFailed += OnMediaFailed;
+            bgPlayer.MediaEnded += OnMediaEnded;
+            bgPlayer.Volume = MainWindow.GameVolume;
+            volume2.Value = MainWindow.GameVolume;
+            bgPlayer.Play();
         }
 
         public Image[,] SetupBoard(UniformGrid Board, BoardValues[,] boardValues, bool isPlayerBoard)
@@ -658,6 +667,22 @@ namespace Battleshit
         {
             this.gamestate.RandomizeBoard(this.gamestate.Board1, this.gamestate.availableShits1);
             DrawBoard(this.boardImages1, this.gamestate.Board1, true);
+        }
+
+        private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            bgPlayer.Volume = (double)e.NewValue;
+        }
+
+        private void OnMediaFailed(object sender, ExceptionEventArgs e)
+        {
+            var exception = e.ErrorException;
+            throw exception;
+        }
+        private void OnMediaEnded(object sender, EventArgs e)
+        {
+            var player = (MediaPlayer)sender;
+            player.Play();
         }
 
         private void Restart_btn_click(object sender, EventArgs e)

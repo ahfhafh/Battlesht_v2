@@ -10,30 +10,62 @@
 
     <Window.Resources>
         <Storyboard x:Key="Wave">
-            <DoubleAnimation Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.RelativeTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="wave_rect" RepeatBehavior="Forever" From="0" To="1" Duration="0:0:2.5" />
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.RelativeTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="wave_rect" RepeatBehavior="Forever" To="1" Duration="0:0:2.5" />
         </Storyboard>
         <Storyboard x:Key="Flush">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.RelativeTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="wave_rect" From="0" To="1" Duration="0:0:3" />
         </Storyboard>
+
+        <Style TargetType="Button" x:Key="MenuBtn">
+            <Setter Property="Background" Value="#FFF73030" />
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10" 
+                        Background="{TemplateBinding Background}" BorderBrush="Black" 
+                        BorderThickness="{TemplateBinding BorderThickness}" >
+                            <ContentPresenter x:Name="contentPresenter" 
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                      Content="{TemplateBinding Content}" 
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}" 
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Beige"/>
+                    <Setter Property="BorderThickness" Value="2,2,2,2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource Wave}"/>
+            <BeginStoryboard Storyboard="{StaticResource Wave}" x:Name="WaveStoryboard"/>
         </EventTrigger>
     </Window.Triggers>
 
     <Grid>
-        <Button Content="Play" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,263,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Play_btn_Click">
+        <Grid.Background>
+            <ImageBrush ImageSource="Assets/dirty_tile_bg.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Button Style="{StaticResource MenuBtn}" Content="Play" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,263,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Play_btn_Click" FontSize="22" FontWeight="Bold" FontFamily="Elephant" Background="White">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.Click">
                     <BeginStoryboard Storyboard="{StaticResource Flush}"/>
                 </EventTrigger>
             </Button.Triggers>
+
         </Button>
-        <Button Content="Exit" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,384,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Exit_btn_Click"/>
+        <Button Style="{StaticResource MenuBtn}" Content="Exit" Panel.ZIndex="10" HorizontalAlignment="Center" Margin="0,384,0,0" VerticalAlignment="Top" Height="65" Width="146" Click="Exit_btn_Click" FontSize="22" FontFamily="Elephant"/>
 
         <Canvas>
-            <Rectangle x:Name="wave_rect" Width="1280" Height="454" Fill="blue" Canvas.Bottom="0" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="250">
+            <Rectangle x:Name="wave_rect" Width="1280" Height="454" Opacity="0.8" Fill="#4ea1c2" Canvas.Bottom="0" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="250">
                 <Rectangle.OpacityMask>
                     <VisualBrush TileMode="Tile" Viewport="0,-1,1,3" Stretch="None"  >
                         <VisualBrush.Visual>
@@ -59,8 +91,8 @@
                     </VisualBrush>
                 </Rectangle.OpacityMask>
             </Rectangle>
-            
-            <Slider x:Name="volume" Width="200" Minimum="0" Maximum="1" Value="0.5" Canvas.Left="1070" Canvas.Top="10" ValueChanged="ChangeMediaVolume"/>
+
+            <Slider x:Name="volume" Width="300" Minimum="0" Maximum="1" Value="0.5" Canvas.Left="950" Canvas.Top="10" ValueChanged="ChangeMediaVolume" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Canvas>
     </Grid>
 </Window>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace Battleshit
@@ -15,6 +16,7 @@ namespace Battleshit
     {
         private MediaPlayer bgPlayer = new MediaPlayer();
         private MediaPlayer flushPlayer = new MediaPlayer();
+        public static double GameVolume { get; set; }
 
         public MainWindow()
         {
@@ -23,6 +25,7 @@ namespace Battleshit
             bgPlayer.MediaFailed += OnMediaFailed;
             bgPlayer.MediaEnded += OnMediaEnded;
             bgPlayer.Play();
+            GameVolume = 0.5;
         }
 
         private void OnMediaFailed(object sender, ExceptionEventArgs e)
@@ -44,9 +47,12 @@ namespace Battleshit
 
         private async Task StartGameEffect()
         {
+            bgPlayer.Volume -= (double)bgPlayer.Volume/2;
             flushPlayer.Open(new Uri("pack://siteoforigin:,,,/Assets/toilet-flushing.mp3"));
             flushPlayer.Play();
+            WaveStoryboard.Storyboard.SetSpeedRatio(this, 1.5);
             await Task.Delay(3000);
+            bgPlayer.Stop();
         }
 
         private void Exit_btn_Click(object sender, RoutedEventArgs e)
@@ -58,6 +64,7 @@ namespace Battleshit
         {
             bgPlayer.Volume = (double)volume.Value;
             flushPlayer.Volume = (double)volume.Value;
+            GameVolume = (double)volume.Value;
         }
     }
 }

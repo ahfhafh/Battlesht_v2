@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\dirty_tile_bg.jpg" />
     <None Remove="Assets\long_stool.png" />
+    <None Remove="Assets\sewer_wall_bg.jpg" />
     <None Remove="Assets\shit_bg.png" />
     <None Remove="Assets\shit_bg_miss.png" />
     <None Remove="Assets\shit_destroyed.png" />
@@ -29,6 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\dirty_tile_bg.jpg" />
+    <Resource Include="Assets\sewer_wall_bg.jpg" />
     <Resource Include="Assets\shit_bg.png" />
     <Resource Include="Assets\shit_bg_miss.png" />
     <Resource Include="Assets\shit_destroyed.png" />
