@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -41,6 +42,8 @@ namespace Battleshit
 
         private async void Play_btn_Click(object sender, RoutedEventArgs e)
         {
+            var btn = (sender as Button);
+            btn.IsEnabled = false;
             await StartGameEffect();
             this.Content = new SinglePlayer();
         }
