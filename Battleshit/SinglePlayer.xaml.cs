@@ -47,6 +47,7 @@ namespace Battleshit
             bgPlayer.MediaEnded += OnMediaEnded;
             bgPlayer.Volume = MainWindow.GameVolume;
             volume2.Value = MainWindow.GameVolume;
+            mute2.IsChecked = MainWindow.GameMute;
             bgPlayer.Play();
         }
 
@@ -681,8 +682,22 @@ namespace Battleshit
         }
         private void OnMediaEnded(object sender, EventArgs e)
         {
-            var player = (MediaPlayer)sender;
+            var player = (sender as MediaPlayer);
+            player.Position = TimeSpan.Zero;
             player.Play();
+        }
+
+        private void HandleMuteCheck(object sender, RoutedEventArgs e)
+        {
+            MainWindow.keepVolume = bgPlayer.Volume;
+            volume2.Value = 0;
+            bgPlayer.Volume = 0;
+        }
+
+        private void HandleMuteUnchecked(object sender, RoutedEventArgs e)
+        {
+            volume2.Value = MainWindow.keepVolume;
+            bgPlayer.Volume = MainWindow.keepVolume;
         }
 
         private void Restart_btn_click(object sender, EventArgs e)

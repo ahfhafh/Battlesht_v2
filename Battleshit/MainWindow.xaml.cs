@@ -18,6 +18,9 @@ namespace Battleshit
         private MediaPlayer bgPlayer = new MediaPlayer();
         private MediaPlayer flushPlayer = new MediaPlayer();
         public static double GameVolume { get; set; }
+        public static double keepVolume { get; set; } = 0;
+
+        public static bool GameMute { get; set; }
 
         public MainWindow()
         {
@@ -27,6 +30,7 @@ namespace Battleshit
             bgPlayer.MediaEnded += OnMediaEnded;
             bgPlayer.Play();
             GameVolume = 0.5;
+            GameMute = false;
         }
 
         private void OnMediaFailed(object sender, ExceptionEventArgs e)
@@ -36,7 +40,8 @@ namespace Battleshit
         }
         private void OnMediaEnded(object sender, EventArgs e)
         {
-            var player = (MediaPlayer)sender;
+            var player = (sender as MediaPlayer);
+            player.Position = TimeSpan.Zero;
             player.Play();
         }
 
@@ -68,6 +73,21 @@ namespace Battleshit
             bgPlayer.Volume = (double)volume.Value;
             flushPlayer.Volume = (double)volume.Value;
             GameVolume = (double)volume.Value;
+        }
+
+        private void HandleMuteCheck(object sender, RoutedEventArgs e)
+        {
+            keepVolume = bgPlayer.Volume;
+            GameMute = true;
+            volume.Value = 0;
+            bgPlayer.Volume = 0;
+        }
+
+        private void HandleMuteUnchecked(object sender, RoutedEventArgs e)
+        {
+            GameMute = false;
+            volume.Value = keepVolume;
+            bgPlayer.Volume = keepVolume;
         }
     }
 }
