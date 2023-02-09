@@ -208,7 +208,7 @@ namespace Battleshit
         private void HighlightElement(object sender, MouseEventArgs e)
         {
             Image img = sender as Image;
-            img.Opacity = 0.5;
+            img.Opacity = 0.2;
 
         }
 

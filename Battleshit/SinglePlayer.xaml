@@ -48,6 +48,6 @@
             <Button Content="Restart" HorizontalAlignment="Left" Margin="548,360,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="60" Width="184" Click="Restart_btn_click"/>
         </Grid>
         <Slider x:Name="volume2" Grid.Column="1" Minimum="0" Maximum="1" ValueChanged="ChangeMediaVolume" Margin="0,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="343"/>
-        <CheckBox x:Name="mute2" Content="Mute" FontWeight="Bold" Foreground="White" Checked="HandleMuteCheck" Unchecked="HandleMuteUnchecked" Margin="10,10,10,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" />
+        <CheckBox x:Name="mute2" Content="Mute" Foreground="White" Checked="HandleMuteCheck" Unchecked="HandleMuteUnchecked" Margin="10,10,10,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" FontWeight="Bold" />
     </Grid>
 </Page>

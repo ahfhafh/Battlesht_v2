@@ -91,6 +91,7 @@
                     </VisualBrush>
                 </Rectangle.OpacityMask>
             </Rectangle>
+            <TextBlock Canvas.Left="480" TextWrapping="Wrap" Text="BattleSh*t" Canvas.Top="92" Height="80" Width="320" HorizontalAlignment="Left" FontSize="72" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Bernard MT Condensed" TextAlignment="Center"/>
         </Canvas>
 
         <Slider x:Name="volume" Minimum="0" Maximum="1" Value="0.5" ValueChanged="ChangeMediaVolume" Margin="0,11,65,0" HorizontalAlignment="Right" Width="300" Height="18" VerticalAlignment="Top"/>
