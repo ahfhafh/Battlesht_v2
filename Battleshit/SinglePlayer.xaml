@@ -29,7 +29,14 @@
                     SnapsToDevicePixels="True"
                     RenderOptions.BitmapScalingMode="HighQuality"/>
         </Border>
-        <Button x:Name="RandomBtn" Content="Random" HorizontalAlignment="Center" Margin="0,575,0,0" VerticalAlignment="Top" Height="30" Width="80" Click="RandomizeBoard_btn"/>
+        <Button x:Name="RandomBtn" Content="Random" HorizontalAlignment="Center" Margin="0,575,0,0" VerticalAlignment="Top" Height="30" Width="80" Click="RandomizeBoard_btn" BorderBrush="Black" FontWeight="Bold">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="#FFFB503E"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <Border x:Name="Board2Overlay" BorderBrush="Black" BorderThickness="2,2,2,2" Width="404" Height="404" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,148,0,0" RenderOptions.EdgeMode="Aliased" Grid.Column="1">
             <UniformGrid x:Name="Board2"
@@ -45,7 +52,7 @@
         <Grid x:Name="Overlay" Grid.ColumnSpan="2" Visibility="Hidden">
             <Border Background="Black"
             Opacity="0.4"/>
-            <Button Content="Restart" HorizontalAlignment="Left" Margin="548,360,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="60" Width="184" Click="Restart_btn_click"/>
+            <Button Content="Restart" HorizontalAlignment="Left" Margin="548,360,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="60" Width="184" Click="Restart_btn_click" Background="White" BorderBrush="Black" FontWeight="Bold"/>
         </Grid>
         <Slider x:Name="volume2" Grid.Column="1" Minimum="0" Maximum="1" ValueChanged="ChangeMediaVolume" Margin="0,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="343"/>
         <CheckBox x:Name="mute2" Content="Mute" Foreground="White" Checked="HandleMuteCheck" Unchecked="HandleMuteUnchecked" Margin="10,10,10,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" FontWeight="Bold" />
