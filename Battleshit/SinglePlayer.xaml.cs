@@ -1338,8 +1338,10 @@ namespace Battleshit
             // create hidden empty board for computer
             this.hiddenBoard = new BoardValues[this.rows, this.cols];
 
-            GameStatusLabel.Content = "Your turn to fire!";
+            GameStatusLabel.Content = "Fire to start game!";
             Overlay.Visibility = Visibility.Hidden;
+            Board1Overlay.Opacity = 1;
+            Board2Overlay.Opacity = 1;
             this.clickable = true;
             gameStarted = false;
             this.RandomBtn.IsEnabled = true;
