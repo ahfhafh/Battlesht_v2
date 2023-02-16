@@ -35,6 +35,7 @@ namespace Battleshit
         private int pickedUpShitLength;
         private Grid currentImgMouseOver;
         readonly RotateTransform rt = new(90);
+        readonly RotateTransform nort = new(0);
         Point rtpoint = new(0.5, 0.5);
         private readonly SolidColorBrush Yellow = new(Color.FromArgb(80, 233, 224, 110));
         private readonly SolidColorBrush None = new(Color.FromArgb(0, 233, 224, 110));
@@ -237,7 +238,7 @@ namespace Battleshit
                             boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
                             boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = rt;
+                            boardImages1[y, x].RenderTransform = nort;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y++;
@@ -245,7 +246,7 @@ namespace Battleshit
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
                         boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = rt;
+                        boardImages1[y, x].RenderTransform = nort;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
@@ -277,7 +278,7 @@ namespace Battleshit
                             boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
                             boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = rt;
+                            boardImages1[y, x].RenderTransform = nort;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y++;
@@ -285,7 +286,7 @@ namespace Battleshit
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
                         boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = rt;
+                        boardImages1[y, x].RenderTransform = nort;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
@@ -316,7 +317,7 @@ namespace Battleshit
                             boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
                             boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = rt;
+                            boardImages1[y, x].RenderTransform = nort;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y--;
@@ -324,7 +325,7 @@ namespace Battleshit
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
                         boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = rt;
+                        boardImages1[y, x].RenderTransform = nort;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
