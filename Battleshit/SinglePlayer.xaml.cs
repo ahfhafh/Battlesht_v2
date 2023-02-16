@@ -18,7 +18,7 @@ namespace Battleshit
     public partial class SinglePlayer : Page
     {
         private Gamestate gamestate;
-        private readonly int rows = 10, cols = 10;
+        public static readonly int rows = 10, cols = 10;
         private readonly Image[,] boardImages1;
         private readonly Image[,] boardImages2;
         private BoardValues[,] hiddenBoard;
@@ -29,6 +29,7 @@ namespace Battleshit
         private bool gameStarted = false;
 
         private readonly MediaPlayer bgPlayer = new();
+        private readonly MediaPlayer splashPlayer = new();
 
         private bool shitPickedUp = false;
         private bool pickedUpShitXorY;
@@ -47,6 +48,7 @@ namespace Battleshit
             InitializeComponent();
 
             GRID.MouseEnter += Bloom;
+            GRID.MouseLeave += Bloop;
             Rectangle rect = new()
             {
                 Name = "RECTANGLE",
@@ -61,7 +63,7 @@ namespace Battleshit
             this.boardImages2 = SetupBoard(Board2, gamestate.Board2, false);
 
             // create hidden empty board for computer
-            this.hiddenBoard = new BoardValues[this.rows, this.cols];
+            this.hiddenBoard = new BoardValues[rows, cols];
 
             // label
             GameStatusLabel.Foreground = Brushes.Red;
@@ -83,7 +85,14 @@ namespace Battleshit
             splashPlayer.Volume = MainWindow.GameVolume + 0.2;
 
             // rightclick mouse event
-            MouseRightButtonDown += changePickedUpShitOri;
+            MouseRightButtonDown += ChangePickedUpShitOri;
+        }
+
+        private void Bloop(object sender, MouseEventArgs e)
+        {
+            Grid grid = sender as Grid;
+
+            ((Rectangle)grid.FindName("RECTANGLE")).Fill = None;
         }
 
         private void Bloom(object sender, MouseEventArgs e)
@@ -93,7 +102,7 @@ namespace Battleshit
             ((Rectangle)grid.FindName("RECTANGLE")).Fill = Yellow;
         }
 
-        private void changePickedUpShitOri(object sender, EventArgs e)
+        private void ChangePickedUpShitOri(object sender, EventArgs e)
         {
             if (shitPickedUp && !gameStarted)
             {
@@ -105,13 +114,13 @@ namespace Battleshit
 
         public Image[,] SetupBoard(UniformGrid Board, BoardValues[,] boardValues, bool isPlayerBoard)
         {
-            Image[,] images = new Image[this.rows, this.cols];
-            Board.Rows = this.rows;
-            Board.Columns = this.cols;
+            Image[,] images = new Image[rows, cols];
+            Board.Rows = rows;
+            Board.Columns = cols;
 
-            for (int y = 0; y < this.rows; y++)
+            for (int y = 0; y < rows; y++)
             {
-                for (int x = 0; x < this.cols; x++)
+                for (int x = 0; x < cols; x++)
                 {
                     Grid cell = new();
                     Image img = new();
@@ -354,7 +363,7 @@ namespace Battleshit
                 if (pickedUpShitXorY) // X
                 {
                     // check for drop space validity
-                    if (!checkValidDropSpaceX(x, y)) { return; }
+                    if (!CheckValidDropSpaceX(x, y)) { return; }
                     // replace image and gamestate board values
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
@@ -390,7 +399,7 @@ namespace Battleshit
                 else // Y
                 {
                     // check for drop space validity
-                    if (!checkValidDropSpaceY(x, y)) { return; }
+                    if (!CheckValidDropSpaceY(x, y)) { return; }
                     // replace image and gamestate board values
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
@@ -435,7 +444,7 @@ namespace Battleshit
             }
         }
 
-        private bool checkValidDropSpaceY(int x, int y)
+        private bool CheckValidDropSpaceY(int x, int y)
         {
             if (y + pickedUpShitLength > rows) { return false; }
             for (int z = 0; z < pickedUpShitLength; z++)
@@ -444,19 +453,19 @@ namespace Battleshit
                 {
                     return false;
                 }
-                if (Gamestate.isValidPos(x - 1, y + z, cols, rows))
+                if (Helpers.IsValidPos(x - 1, y + z, cols, rows))
                 {
                     if (gamestate.Board1[y + z, x - 1] != BoardValues.Empty) { return false; }    // left
                 }
-                if (Gamestate.isValidPos(x, y - 1 + z, cols, rows))
+                if (Helpers.IsValidPos(x, y - 1 + z, cols, rows))
                 {
                     if (gamestate.Board1[y - 1 + z, x] != BoardValues.Empty) { return false; }    // top
                 }
-                if (Gamestate.isValidPos(x, y + 1 + z, cols, rows))
+                if (Helpers.IsValidPos(x, y + 1 + z, cols, rows))
                 {
                     if (gamestate.Board1[y + 1 + z, x] != BoardValues.Empty) { return false; }    // bottom
                 }
-                if (Gamestate.isValidPos(x + 1, y + z, cols, rows))
+                if (Helpers.IsValidPos(x + 1, y + z, cols, rows))
                 {
                     if (gamestate.Board1[y + z, x + 1] != BoardValues.Empty) { return false; }    // right
                 }
@@ -465,7 +474,7 @@ namespace Battleshit
             return true;
         }
 
-        private bool checkValidDropSpaceX(int x, int y)
+        private bool CheckValidDropSpaceX(int x, int y)
         {
             if (x + pickedUpShitLength > cols) { return false; }
             for (int z = 0; z < pickedUpShitLength; z++)
@@ -474,19 +483,19 @@ namespace Battleshit
                 {
                     return false;
                 }
-                if (Gamestate.isValidPos(x - 1 + z, y, cols, rows))
+                if (Helpers.IsValidPos(x - 1 + z, y, cols, rows))
                 {
                     if (gamestate.Board1[y, x - 1 + z] != BoardValues.Empty) { return false; }    // behind
                 }
-                if (Gamestate.isValidPos(x + z, y - 1, cols, rows))
+                if (Helpers.IsValidPos(x + z, y - 1, cols, rows))
                 {
                     if (gamestate.Board1[y - 1, x + z] != BoardValues.Empty) { return false; }    // top
                 }
-                if (Gamestate.isValidPos(x + z, y + 1, cols, rows))
+                if (Helpers.IsValidPos(x + z, y + 1, cols, rows))
                 {
                     if (gamestate.Board1[y + 1, x + z] != BoardValues.Empty) { return false; }    // bottom
                 }
-                if (Gamestate.isValidPos(x + 1 + z, y, cols, rows))
+                if (Helpers.IsValidPos(x + 1 + z, y, cols, rows))
                 {
                     if (gamestate.Board1[y, x + 1 + z] != BoardValues.Empty) { return false; }    // in front
                 }
@@ -709,7 +718,7 @@ namespace Battleshit
                 if (pickedUpShitXorY) // X
                 {
                     // check for drop space validity
-                    if (!checkValidDropSpaceX(x, y)) { return; }
+                    if (!CheckValidDropSpaceX(x, y)) { return; }
                     // show effect on drop space
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
@@ -721,7 +730,7 @@ namespace Battleshit
                 else // Y
                 {
                     // check for drop space validity
-                    if (!checkValidDropSpaceY(x, y)) { return; }
+                    if (!CheckValidDropSpaceY(x, y)) { return; }
                     // show effect on drop space
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
@@ -734,9 +743,9 @@ namespace Battleshit
 
         private void DrawBoard(Image[,] images, BoardValues[,] boardValues, bool isPlayerBoard)
         {
-            for (int y = 0; y < this.rows; y++)
+            for (int y = 0; y < rows; y++)
             {
-                for (int x = 0; x < this.cols; x++)
+                for (int x = 0; x < cols; x++)
                 {
                     switch (boardValues[y, x])
                     {
@@ -905,7 +914,7 @@ namespace Battleshit
             }
 
             // Check if player won
-            if (CheckWon(this.gamestate.Board2))
+            if (Helpers.CheckWon(this.gamestate.Board2))
             {
                 GameStatusLabel.Content = "You won!";
                 Overlay.Visibility = Visibility.Visible;
@@ -922,14 +931,14 @@ namespace Battleshit
             int rnd_y = random.Next(0, rows);
 
             // Find optimal next position to check if exists
-            for (int i = 0; i < this.rows; i++)
+            for (int i = 0; i < rows; i++)
             {
-                for (int j = 0; j < this.cols; j++)
+                for (int j = 0; j < cols; j++)
                 {
                     // Check if shit at position is destroyed and not sunken
                     if (this.hiddenBoard[i, j] == BoardValues.Destroyed)
                     {
-                        var dir = FindShitDir(this.hiddenBoard, i, j, BoardValues.Destroyed);
+                        var dir = Helpers.FindShitDir(this.hiddenBoard, i, j, BoardValues.Destroyed);
                         if (dir != null)
                         {
                             int c_y = 0;
@@ -1014,7 +1023,7 @@ namespace Battleshit
                 for (int j = 0; j < cols - 1; j++)
                 {
                     while ((j + c + 1 < cols) && (this.hiddenBoard[i, j] == BoardValues.Empty) && this.hiddenBoard[i, j + c + 1] == BoardValues.Empty &&
-                        (FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Destroyed) == null) && (FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Sunk) == null))
+                        (Helpers.FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Destroyed) == null) && (Helpers.FindShitDir(this.hiddenBoard, i, j + c + 1, BoardValues.Sunk) == null))
                     {
                         c++;
                     }
@@ -1031,7 +1040,7 @@ namespace Battleshit
                 for (int i = 0; i < rows - 1; i++)
                 {
                     while ((i + c + 1 < rows) && (this.hiddenBoard[i, j] == BoardValues.Empty) && this.hiddenBoard[i + c + 1, j] == BoardValues.Empty &&
-                        (FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Destroyed) == null) && (FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Sunk) == null))
+                        (Helpers.FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Destroyed) == null) && (Helpers.FindShitDir(this.hiddenBoard, i + c + 1, j, BoardValues.Sunk) == null))
                     {
                         c++;
                     }
@@ -1093,7 +1102,7 @@ namespace Battleshit
             }
 
             // Check if computer won
-            if (CheckWon(this.gamestate.Board1))
+            if (Helpers.CheckWon(this.gamestate.Board1))
             {
                 GameStatusLabel.Foreground = Brushes.White;
                 GameStatusLabel.Content = "You lost!";
@@ -1110,47 +1119,6 @@ namespace Battleshit
 
         }
 
-        // Find orientation of shit
-        // True = vertical
-        private bool? FindShitDir(BoardValues[,] Board, int y, int x, BoardValues BoardValue)
-        {
-            // Check if any adjacent direction is the specified boardvalue
-            if (x + 1 < cols && Board[y, x + 1] == BoardValue)
-            {
-                return false;
-            }
-            else if (x - 1 >= 0 && Board[y, x - 1] == BoardValue)
-            {
-                return false;
-            }
-            else if (y + 1 < rows && Board[y + 1, x] == BoardValue)
-            {
-                return true;
-            }
-            else if (y - 1 >= 0 && Board[y - 1, x] == BoardValue)
-            {
-                return true;
-            }
-
-            return null;
-        }
-
-        private bool CheckWon(BoardValues[,] Board)
-        {
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    // exist a shit
-                    if (new[] { 1, 2, 3, 4, 5, 6 }.Contains((int)Board[i, j]))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
         private void ApplySunk(BoardValues[,] Board, int y, int x)
         {
             splashPlayer.Play();
@@ -1160,7 +1128,7 @@ namespace Battleshit
             {
                 case BoardValues.Head_x:
                     Board[y, x] = BoardValues.Destroyed;
-                    while ((x + i) < this.cols)
+                    while ((x + i) < cols)
                     {
                         if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
                         {
@@ -1179,7 +1147,7 @@ namespace Battleshit
                     break;
                 case BoardValues.Head_y:
                     Board[y, x] = BoardValues.Destroyed;
-                    while ((y + i) < this.rows)
+                    while ((y + i) < rows)
                     {
                         if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
                         {
@@ -1198,7 +1166,7 @@ namespace Battleshit
                     break;
                 case BoardValues.Body_x:
                     Board[y, x] = BoardValues.Destroyed;
-                    while ((x + i) < this.cols)
+                    while ((x + i) < cols)
                     {
                         if (Board[y, x + i] == BoardValues.Empty || Board[y, x + i] == BoardValues.Miss)
                         {
@@ -1230,7 +1198,7 @@ namespace Battleshit
                     break;
                 case BoardValues.Body_y:
                     Board[y, x] = BoardValues.Destroyed;
-                    while ((y + i) < this.rows)
+                    while ((y + i) < rows)
                     {
                         if (Board[y + i, x] == BoardValues.Empty || Board[y + i, x] == BoardValues.Miss)
                         {
@@ -1357,7 +1325,7 @@ namespace Battleshit
             DrawBoard(this.boardImages2, this.gamestate.Board2, false);
 
             // create hidden empty board for computer
-            this.hiddenBoard = new BoardValues[this.rows, this.cols];
+            this.hiddenBoard = new BoardValues[rows, cols];
 
             GameStatusLabel.Content = "Fire to start game!";
             Overlay.Visibility = Visibility.Hidden;
@@ -1383,3 +1351,9 @@ namespace Battleshit
         }*/
     }
 }
+
+
+// sound and visual indicator when poop is hit
+// error when trying to start game while holding poop
+// ghost of poop when moving
+// indicate you can rotate by right clicking
