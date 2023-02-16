@@ -72,9 +72,15 @@ namespace Battleshit
             bgPlayer.MediaFailed += OnMediaFailed;
             bgPlayer.MediaEnded += OnMediaEnded;
             bgPlayer.Volume = MainWindow.GameVolume;
-            volume2.Value = MainWindow.GameVolume;
+            volumeSlider2.Value = MainWindow.GameVolume;
             mute2.IsChecked = MainWindow.GameMute;
             bgPlayer.Play();
+
+            // sfx
+            splashPlayer.Open(new Uri("pack://siteoforigin:,,,/Assets/splash.mp3"));
+            splashPlayer.MediaFailed += OnMediaFailed;
+            splashPlayer.MediaEnded += OnMediaEnded_Splash;
+            splashPlayer.Volume = MainWindow.GameVolume + 0.2;
 
             // rightclick mouse event
             MouseRightButtonDown += changePickedUpShitOri;
@@ -1147,6 +1153,7 @@ namespace Battleshit
 
         private void ApplySunk(BoardValues[,] Board, int y, int x)
         {
+            splashPlayer.Play();
             int i = 1;
             int c = 1;
             switch (Board[y, x])
@@ -1305,6 +1312,7 @@ namespace Battleshit
 
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            splashPlayer.Volume = (double)e.NewValue + 0.2;
             bgPlayer.Volume = (double)e.NewValue;
         }
 
@@ -1317,20 +1325,27 @@ namespace Battleshit
         {
             var player = (sender as MediaPlayer);
             player.Position = TimeSpan.Zero;
-            player.Play();
+        }
+        private void OnMediaEnded_Splash(object sender, EventArgs e)
+        {
+            var player = (sender as MediaPlayer);
+            player.Position = TimeSpan.Zero;
+            player.Stop();
         }
 
         private void HandleMuteCheck(object sender, RoutedEventArgs e)
         {
             MainWindow.keepVolume = bgPlayer.Volume;
-            volume2.Value = 0;
+            volumeSlider2.Value = 0;
             bgPlayer.Volume = 0;
+            splashPlayer.Volume = 0;
         }
 
         private void HandleMuteUnchecked(object sender, RoutedEventArgs e)
         {
-            volume2.Value = MainWindow.keepVolume;
+            volumeSlider2.Value = MainWindow.keepVolume;
             bgPlayer.Volume = MainWindow.keepVolume;
+            splashPlayer.Volume = MainWindow.keepVolume + 0.2;
         }
 
         private void Restart_btn_click(object sender, EventArgs e)

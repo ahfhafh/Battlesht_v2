@@ -19,6 +19,7 @@
     <None Remove="Assets\shit_destroyed.png" />
     <None Remove="Assets\shit_sunk.png" />
     <None Remove="Assets\sound-bg.mp3" />
+    <None Remove="Assets\splash.mp3" />
     <None Remove="Assets\stool_head.png" />
     <None Remove="Assets\stool_mid.png" />
     <None Remove="Assets\stool_tail.png" />
@@ -27,6 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\splash.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="toiletpaper_119528.ico" />
   </ItemGroup>
 
