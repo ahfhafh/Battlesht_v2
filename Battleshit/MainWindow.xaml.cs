@@ -59,7 +59,7 @@ namespace Battleshit
             flushPlayer.Open(new Uri("pack://siteoforigin:,,,/Assets/toilet-flushing.mp3"));
             flushPlayer.Play();
             WaveStoryboard.Storyboard.SetSpeedRatio(this, 1.5);
-            await Task.Delay(3000);
+            await Task.Delay(3);
             bgPlayer.Stop();
         }
 

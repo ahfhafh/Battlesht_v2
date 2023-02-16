@@ -28,11 +28,11 @@ namespace Battleshit
             Board1 = new BoardValues[rows, cols];
             Board2 = new BoardValues[rows, cols];
 
-            placeShits(Board1, availableShits1);
-            placeShits(Board2, availableShits2);
+            PlaceShits(Board1, availableShits1);
+            PlaceShits(Board2, availableShits2);
         }
 
-        private void placeShits(BoardValues[,] Board, Shit[] availableShits)
+        private void PlaceShits(BoardValues[,] Board, Shit[] availableShits)
         {
             foreach (Shit shit in availableShits)
             {
@@ -40,7 +40,7 @@ namespace Battleshit
                 int rnd_y = random.Next(0, Rows);
                 bool orientation = (rnd_x + rnd_y) % 2 == 0;    // false = horizontal
                 // check if shit fits
-                while (placeShit(Board, shit.length, orientation, rnd_x, rnd_y))
+                while (PlaceShit(Board, shit.length, orientation, rnd_x, rnd_y))
                 {
                     rnd_x = random.Next(0, Cols);
                     rnd_y = random.Next(0, Rows);
@@ -49,14 +49,7 @@ namespace Battleshit
             }
         }
 
-        public static bool isValidPos(int x, int y, int cols, int rows)
-        {
-            if (x < 0 || y < 0 || x > cols - 1 || y > rows - 1)
-                return false;
-            return true;
-        }
-
-        public bool placeShit(BoardValues[,] Board, int length, bool orientation, int location_x, int location_y)
+        public bool PlaceShit(BoardValues[,] Board, int length, bool orientation, int location_x, int location_y)
         {
             // Check if location is out of bounds
             if ((location_x + length > Cols) && !orientation) { return true; }
@@ -70,19 +63,19 @@ namespace Battleshit
                     // Check location
                     if (Board[location_y, location_x + i] != 0) { return true; }    // on location
                     // Check adjacent positions
-                    if (isValidPos(location_x - 1 + i, location_y, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x - 1 + i, location_y, Cols, Rows))
                     {
                         if (Board[location_y, location_x - 1 + i] != 0) { return true; }    // behind
                     }
-                    if (isValidPos(location_x + i, location_y - 1, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x + i, location_y - 1, Cols, Rows))
                     {
                         if (Board[location_y - 1, location_x + i] != 0) { return true; }    // top
                     }
-                    if (isValidPos(location_x + i, location_y + 1, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x + i, location_y + 1, Cols, Rows))
                     {
                         if (Board[location_y + 1, location_x + i] != 0) { return true; }    // bottom
                     }
-                    if (isValidPos(location_x + 1 + i, location_y, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x + 1 + i, location_y, Cols, Rows))
                     {
                         if (Board[location_y, location_x + 1 + i] != 0) { return true; }    // in front
                     }
@@ -92,19 +85,19 @@ namespace Battleshit
                     // Check location
                     if (Board[location_y + i, location_x] != 0) { return true; }    // on location
                     // Check adjacent positions
-                    if (isValidPos(location_x - 1, location_y + i, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x - 1, location_y + i, Cols, Rows))
                     {
                         if (Board[location_y + i, location_x - 1] != 0) { return true; }    // left
                     }
-                    if (isValidPos(location_x + 1, location_y + i, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x + 1, location_y + i, Cols, Rows))
                     {
                         if (Board[location_y + i, location_x + 1] != 0) { return true; }    // right
                     }
-                    if (isValidPos(location_x, location_y + 1 + i, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x, location_y + 1 + i, Cols, Rows))
                     {
                         if (Board[location_y + 1 + i, location_x] != 0) { return true; }    // top
                     }
-                    if (isValidPos(location_x, location_y - 1 + i, Cols, Rows))
+                    if (Helpers.IsValidPos(location_x, location_y - 1 + i, Cols, Rows))
                     {
                         if (Board[location_y - 1 + i, location_x] != 0) { return true; }    // bottom
                     }
@@ -153,7 +146,7 @@ namespace Battleshit
         internal void RandomizeBoard(BoardValues[,] Board, Shit[] availableShits)
         {
             Array.Clear(Board, 0, Board.Length);
-            placeShits(Board, availableShits);
+            PlaceShits(Board, availableShits);
         }
     }
 }
