@@ -33,12 +33,16 @@ namespace Battleshit
 
         private bool shitPickedUp = false;
         private bool pickedUpShitXorY;
+        private bool pickedUpShitOriChange;
         private int pickedUpShitLength;
+        private int previousImgMouseOverX;
+        private int previousImgMouseOverY;
         private Grid currentImgMouseOver;
         readonly RotateTransform rt = new(90);
         readonly RotateTransform nort = new(0);
         Point rtpoint = new(0.5, 0.5);
         private readonly SolidColorBrush Yellow = new(Color.FromArgb(80, 233, 224, 110));
+        private readonly SolidColorBrush Red = new(Color.FromArgb(80, 90, 0, 0));
         private readonly SolidColorBrush None = new(Color.FromArgb(0, 233, 224, 110));
 
         private readonly Rectangle[,] boardRecs1 = new Rectangle[10, 10];
@@ -46,17 +50,6 @@ namespace Battleshit
         public SinglePlayer()
         {
             InitializeComponent();
-
-            GRID.MouseEnter += Bloom;
-            GRID.MouseLeave += Bloop;
-            Rectangle rect = new()
-            {
-                Name = "RECTANGLE",
-                Stroke = new SolidColorBrush(Colors.Black),
-                Fill = None,
-            };
-            RegisterName(rect.Name, rect);
-            GRID.Children.Add(rect);
 
             this.gamestate = new Gamestate(rows, cols);
             this.boardImages1 = SetupBoard(Board1, gamestate.Board1, true);
@@ -88,26 +81,13 @@ namespace Battleshit
             MouseRightButtonDown += ChangePickedUpShitOri;
         }
 
-        private void Bloop(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-
-            ((Rectangle)grid.FindName("RECTANGLE")).Fill = None;
-        }
-
-        private void Bloom(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-
-            ((Rectangle)grid.FindName("RECTANGLE")).Fill = Yellow;
-        }
-
         private void ChangePickedUpShitOri(object sender, EventArgs e)
         {
             if (shitPickedUp && !gameStarted)
             {
                 HandleUnhighlight(currentImgMouseOver, null);
                 pickedUpShitXorY = !pickedUpShitXorY;
+                pickedUpShitOriChange = true;
                 HandleHighlight(currentImgMouseOver, null);
             }
         }
@@ -230,38 +210,38 @@ namespace Battleshit
                 switch (imgtype)
                 {
                     case BoardValues.Head_x:
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_x)
                         {
                             cell.Cursor = Cursors.Arrow;
+                            boardImages1[y, x].Opacity = 0.3;
                             boardRecs1[y, x].Fill = None;
-                            boardImages1[y, x].Source = Images.Shit_bg;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             x++;
                         }
-                        boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = true;
                         shitPickedUp = true;
                         break;
                     case BoardValues.Head_y:
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_y)
                         {
-                            boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
-                            boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = nort;
+                            boardImages1[y, x].Opacity = 0.3;
+                            boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y++;
                         }
-                        boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = nort;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
@@ -269,18 +249,19 @@ namespace Battleshit
                         break;
                     case BoardValues.Body_x:
                         while (gamestate.Board1[y, x] != BoardValues.Head_x) { x--; }
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_x)
                         {
-                            boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
-                            boardImages1[y, x].Source = Images.Shit_bg;
+                            boardImages1[y, x].Opacity = 0.3;
+                            boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             x++;
                         }
-                        boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = true;
@@ -288,20 +269,19 @@ namespace Battleshit
                         break;
                     case BoardValues.Body_y:
                         while (gamestate.Board1[y, x] != BoardValues.Head_y) { y--; }
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_y)
                         {
-                            boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
-                            boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = nort;
+                            boardImages1[y, x].Opacity = 0.3;
+                            boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y++;
                         }
-                        boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = nort;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
@@ -310,17 +290,17 @@ namespace Battleshit
                     case BoardValues.Tail_x:
                         while (gamestate.Board1[y, x] != BoardValues.Head_x)
                         {
-
-                            boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
-                            boardImages1[y, x].Source = Images.Shit_bg;
+                            boardImages1[y, x].Opacity = 0.3;
+                            boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             x--;
                         }
-                        boardRecs1[y, x].Fill = None;
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = true;
@@ -329,18 +309,17 @@ namespace Battleshit
                     case BoardValues.Tail_y:
                         while (gamestate.Board1[y, x] != BoardValues.Head_y)
                         {
-                            boardRecs1[y, x].Fill = None;
                             cell.Cursor = Cursors.Arrow;
-                            boardImages1[y, x].Source = Images.Shit_bg;
-                            boardImages1[y, x].RenderTransform = nort;
+                            boardImages1[y, x].Opacity = 0.3;
+                            boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
                             y--;
                         }
-                        boardRecs1[y, x].Fill = None;
+                        previousImgMouseOverX = x; previousImgMouseOverY = y;
                         cell.Cursor = Cursors.Arrow;
-                        boardImages1[y, x].Source = Images.Shit_bg;
-                        boardImages1[y, x].RenderTransform = nort;
+                        boardImages1[y, x].Opacity = 0.3;
+                        boardRecs1[y, x].Fill = None;
                         gamestate.Board1[y, x] = BoardValues.Empty;
                         pickedUpShitLength++;
                         pickedUpShitXorY = false;
@@ -363,10 +342,22 @@ namespace Battleshit
                 if (pickedUpShitXorY) // X
                 {
                     // check for drop space validity
-                    if (!CheckValidDropSpaceX(x, y)) { return; }
+                    if (!CheckValidDropSpaceX(x, y)) { pickedUpShitOriChange = false; return; }
                     // replace image and gamestate board values
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
+                        if (pickedUpShitOriChange)
+                        {
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Source = Images.Shit_bg;
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Opacity = 1;
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].RenderTransform = nort;
+                        } else
+                        {
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Source = Images.Shit_bg;
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Opacity = 1;
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].RenderTransform = nort;
+                        }
+                        
                         if (z == 0)
                         {
                             gamestate.Board1[y, x + z] = BoardValues.Head_x;
@@ -391,18 +382,29 @@ namespace Battleshit
                             boardImages1[y, x + z].MouseLeave += HandleUnhighlight;
                             boardImages1[y, x + z].MouseLeftButtonDown += HandleShitPickupNDrop;
                         }
-
-                        /*                        boardImages1[y, x + z].Cursor = Cursors.Hand;*/
                     }
 
                 }
                 else // Y
                 {
                     // check for drop space validity
-                    if (!CheckValidDropSpaceY(x, y)) { return; }
+                    if (!CheckValidDropSpaceY(x, y)) { pickedUpShitOriChange = false; return; }
                     // replace image and gamestate board values
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
+                        if (pickedUpShitOriChange)
+                        {
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Source = Images.Shit_bg;
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Opacity = 1;
+                            boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].RenderTransform = nort;
+                        }
+                        else
+                        {
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Source = Images.Shit_bg;
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Opacity = 1;
+                            boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].RenderTransform = nort;
+                        }
+
                         if (z == 0)
                         {
                             gamestate.Board1[y + z, x] = BoardValues.Head_y;
@@ -410,7 +412,7 @@ namespace Battleshit
                             boardImages1[y + z, x].MouseEnter += HandleHighlight;
                             boardImages1[y + z, x].MouseLeave += HandleUnhighlight;
                             boardImages1[y + z, x].MouseLeftButtonDown += HandleShitPickupNDrop;
-                            boardImages1[y + z, x].RenderTransformOrigin = new Point(0.5, 0.5);
+                            boardImages1[y + z, x].RenderTransformOrigin = rtpoint;
                             boardImages1[y + z, x].RenderTransform = rt;
                         }
                         else if (z == pickedUpShitLength - 1)
@@ -420,7 +422,7 @@ namespace Battleshit
                             boardImages1[y + z, x].MouseEnter += HandleHighlight;
                             boardImages1[y + z, x].MouseLeave += HandleUnhighlight;
                             boardImages1[y + z, x].MouseLeftButtonDown += HandleShitPickupNDrop;
-                            boardImages1[y + z, x].RenderTransformOrigin = new Point(0.5, 0.5);
+                            boardImages1[y + z, x].RenderTransformOrigin = rtpoint;
                             boardImages1[y + z, x].RenderTransform = rt;
                         }
                         else
@@ -430,15 +432,13 @@ namespace Battleshit
                             boardImages1[y + z, x].MouseEnter += HandleHighlight;
                             boardImages1[y + z, x].MouseLeave += HandleUnhighlight;
                             boardImages1[y + z, x].MouseLeftButtonDown += HandleShitPickupNDrop;
-                            boardImages1[y + z, x].RenderTransformOrigin = new Point(0.5, 0.5);
+                            boardImages1[y + z, x].RenderTransformOrigin = rtpoint;
                             boardImages1[y + z, x].RenderTransform = rt;
                         }
-
-                        /*                        boardImages1[y + z, x].Cursor = Cursors.Hand;*/
                     }
                 }
                 shitPickedUp = false;
-
+                pickedUpShitOriChange = false;
                 Print2DArray(gamestate.Board1);
                 return;
             }
@@ -871,8 +871,29 @@ namespace Battleshit
         // Process a turn when player clicks
         private async void PlayerTurnClick(object sender, RoutedEventArgs e)
         {
+            // Don't start
+            if (shitPickedUp)
+            {
+                for (int z = 0; z < rows; z++)
+                {
+                    for (int v = 0; v < cols; v++)
+                    {
+                        boardRecs1[z, v].Fill = Red;
+                    }
+                }
+                await Task.Delay(600);
+                for (int z = 0; z < rows; z++)
+                {
+                    for (int v = 0; v < cols; v++)
+                    {
+                        boardRecs1[z, v].Fill = None;
+                    }
+                }
+                return;
+            }
+
             // Disable click
-            if (!this.clickable || shitPickedUp)
+            if (!this.clickable)
             {
                 return;
             }
@@ -1276,6 +1297,7 @@ namespace Battleshit
         private void RandomizeBoard_btn(object sender, EventArgs e)
         {
             shitPickedUp = false;
+            pickedUpShitOriChange = false;
             this.gamestate.RandomizeBoard(this.gamestate.Board1, this.gamestate.availableShits1);
             DrawBoard(this.boardImages1, this.gamestate.Board1, true);
         }

@@ -56,8 +56,5 @@
         </Grid>
         <Slider x:Name="volumeSlider2" Grid.Column="1" Minimum="0" Maximum="1" ValueChanged="ChangeMediaVolume" Margin="0,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="343"/>
         <CheckBox x:Name="mute2" Content="Mute" Foreground="White" Checked="HandleMuteCheck" Unchecked="HandleMuteUnchecked" Margin="10,10,10,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" FontWeight="Bold" />
-        <Grid x:Name="GRID" Margin="17,0,387,24" Height="240" VerticalAlignment="Bottom" Grid.Column="1">
-            <Image Source="/Assets/stool_head.png" Margin="0,-8,0,-4" Panel.ZIndex="-1"/>
-        </Grid>
     </Grid>
 </Page>
