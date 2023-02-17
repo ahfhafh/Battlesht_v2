@@ -747,6 +747,8 @@ namespace Battleshit
             {
                 for (int x = 0; x < cols; x++)
                 {
+                    images[y, x].Opacity = 1;
+                    boardRecs1[y, x].Fill = None;
                     switch (boardValues[y, x])
                     {
                         case BoardValues.Empty:
@@ -761,7 +763,7 @@ namespace Battleshit
                                 images[y, x].MouseLeftButtonDown += HandleShitPickupNDrop;
                             }
                             else { images[y, x].Source = Images.Shit_bg; }
-                            images[y, x].RenderTransform = null;
+                            images[y, x].RenderTransform = nort;
                             break;
                         case BoardValues.Head_y:
                             if (isPlayerBoard)
@@ -784,7 +786,7 @@ namespace Battleshit
                                 images[y, x].MouseLeftButtonDown += HandleShitPickupNDrop;
                             }
                             else { images[y, x].Source = Images.Shit_bg; }
-                            images[y, x].RenderTransform = null;
+                            images[y, x].RenderTransform = nort;
                             break;
                         case BoardValues.Body_y:
                             if (isPlayerBoard)
@@ -807,7 +809,7 @@ namespace Battleshit
                                 images[y, x].MouseLeftButtonDown += HandleShitPickupNDrop;
                             }
                             else { images[y, x].Source = Images.Shit_bg; }
-                            images[y, x].RenderTransform = null;
+                            images[y, x].RenderTransform = nort;
                             break;
                         case BoardValues.Tail_y:
                             if (isPlayerBoard)
