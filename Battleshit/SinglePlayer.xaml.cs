@@ -891,19 +891,32 @@ namespace Battleshit
             // Don't start
             if (shitPickedUp)
             {
-                for (int z = 0; z < rows; z++)
+                if (pickedUpShitXorY) // X
                 {
-                    for (int v = 0; v < cols; v++)
+                    for (int i = 0; i < pickedUpShitLength; i++)
                     {
-                        boardRecs1[z, v].Fill = Red;
+                        boardRecs1[previousImgMouseOverY, previousImgMouseOverX + i].Fill = Red;
+                    }
+                } else // Y
+                {
+                    for (int i = 0; i < pickedUpShitLength; i++)
+                    {
+                        boardRecs1[previousImgMouseOverY + i, previousImgMouseOverX].Fill = Red;
                     }
                 }
                 await Task.Delay(600);
-                for (int z = 0; z < rows; z++)
+                if (pickedUpShitXorY) // X
                 {
-                    for (int v = 0; v < cols; v++)
+                    for (int i = 0; i < pickedUpShitLength; i++)
                     {
-                        boardRecs1[z, v].Fill = None;
+                        boardRecs1[previousImgMouseOverY, previousImgMouseOverX + i].Fill = None;
+                    }
+                }
+                else // Y
+                {
+                    for (int i = 0; i < pickedUpShitLength; i++)
+                    {
+                        boardRecs1[previousImgMouseOverY + i, previousImgMouseOverX].Fill = None;
                     }
                 }
                 return;
@@ -1395,5 +1408,4 @@ namespace Battleshit
 
 
 // sound and visual indicator when poop is hit
-// error when trying to start game while holding poop
 // indicate you can rotate by right clicking
