@@ -33,10 +33,11 @@ namespace Battleshit
 
         private bool shitPickedUp = false;
         private bool pickedUpShitXorY;
-        private bool pickedUpShitOriChange;
+        private bool pickedUpShitOriChange = false;
         private int pickedUpShitLength;
         private int previousImgMouseOverX;
         private int previousImgMouseOverY;
+        private int pickedUpShitIndex;
         private Grid currentImgMouseOver;
         readonly RotateTransform rt = new(90);
         readonly RotateTransform nort = new(0);
@@ -87,7 +88,7 @@ namespace Battleshit
             {
                 HandleUnhighlight(currentImgMouseOver, null);
                 pickedUpShitXorY = !pickedUpShitXorY;
-                pickedUpShitOriChange = true;
+                pickedUpShitOriChange = !pickedUpShitOriChange;
                 HandleHighlight(currentImgMouseOver, null);
             }
         }
@@ -198,6 +199,7 @@ namespace Battleshit
             {
                 Debug.WriteLine("Shit picked up");
                 pickedUpShitLength = 0;
+                pickedUpShitIndex = 1;
                 // remove shit
                 Grid cell = sender as Grid;
                 // get index of img in board
@@ -248,7 +250,7 @@ namespace Battleshit
                         shitPickedUp = true;
                         break;
                     case BoardValues.Body_x:
-                        while (gamestate.Board1[y, x] != BoardValues.Head_x) { x--; }
+                        while (gamestate.Board1[y, x] != BoardValues.Head_x) { x--; pickedUpShitIndex++; }
                         previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_x)
                         {
@@ -268,7 +270,7 @@ namespace Battleshit
                         shitPickedUp = true;
                         break;
                     case BoardValues.Body_y:
-                        while (gamestate.Board1[y, x] != BoardValues.Head_y) { y--; }
+                        while (gamestate.Board1[y, x] != BoardValues.Head_y) { y--; pickedUpShitIndex++; }
                         previousImgMouseOverX = x; previousImgMouseOverY = y;
                         while (gamestate.Board1[y, x] != BoardValues.Tail_y)
                         {
@@ -295,6 +297,7 @@ namespace Battleshit
                             boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
+                            pickedUpShitIndex++;
                             x--;
                         }
                         previousImgMouseOverX = x; previousImgMouseOverY = y;
@@ -314,6 +317,7 @@ namespace Battleshit
                             boardRecs1[y, x].Fill = None;
                             gamestate.Board1[y, x] = BoardValues.Empty;
                             pickedUpShitLength++;
+                            pickedUpShitIndex++;
                             y--;
                         }
                         previousImgMouseOverX = x; previousImgMouseOverY = y;
@@ -341,6 +345,8 @@ namespace Battleshit
 
                 if (pickedUpShitXorY) // X
                 {
+                    // move head of drop based on index
+                    for (int i = 1; i < pickedUpShitIndex; i++) { x--; }
                     // check for drop space validity
                     if (!CheckValidDropSpaceX(x, y)) { pickedUpShitOriChange = false; return; }
                     // replace image and gamestate board values
@@ -351,13 +357,16 @@ namespace Battleshit
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Source = Images.Shit_bg;
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Opacity = 1;
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].RenderTransform = nort;
-                        } else
+                        }
+                        else
                         {
                             boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Source = Images.Shit_bg;
                             boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].Opacity = 1;
                             boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].RenderTransform = nort;
                         }
-                        
+                    }
+                        for (int z = 0; z < pickedUpShitLength; z++)
+                    {
                         if (z == 0)
                         {
                             gamestate.Board1[y, x + z] = BoardValues.Head_x;
@@ -387,6 +396,8 @@ namespace Battleshit
                 }
                 else // Y
                 {
+                    // move head of drop based on index
+                    for (int i = 1; i < pickedUpShitIndex; i++) { y--; }
                     // check for drop space validity
                     if (!CheckValidDropSpaceY(x, y)) { pickedUpShitOriChange = false; return; }
                     // replace image and gamestate board values
@@ -404,7 +415,9 @@ namespace Battleshit
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].Opacity = 1;
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].RenderTransform = nort;
                         }
-
+                    }
+                        for (int z = 0; z < pickedUpShitLength; z++)
+                    {
                         if (z == 0)
                         {
                             gamestate.Board1[y + z, x] = BoardValues.Head_y;
@@ -447,6 +460,7 @@ namespace Battleshit
         private bool CheckValidDropSpaceY(int x, int y)
         {
             if (y + pickedUpShitLength > rows) { return false; }
+            if (y < 0) { return false; }
             for (int z = 0; z < pickedUpShitLength; z++)
             {
                 if (gamestate.Board1[y + z, x] != BoardValues.Empty)
@@ -477,6 +491,7 @@ namespace Battleshit
         private bool CheckValidDropSpaceX(int x, int y)
         {
             if (x + pickedUpShitLength > cols) { return false; }
+            if (x < 0) { return false; }
             for (int z = 0; z < pickedUpShitLength; z++)
             {
                 if (gamestate.Board1[y, x + z] != BoardValues.Empty)
@@ -585,17 +600,17 @@ namespace Battleshit
                     break;
                 default:
                     break;
-            }
+            }   // unhighlight shit
 
-            if (shitPickedUp)
+            if (shitPickedUp)   // unhighlight shit_bg
             {
                 // unhighlight
                 if (pickedUpShitXorY) // X
                 {
-                    if (x + pickedUpShitLength > cols)
-                    {
-                        return;
-                    }
+                    // move head of drop based on index
+                    for (int i = 1; i < pickedUpShitIndex; i++) { x--; }
+                    if (x + pickedUpShitLength > cols) { return; }
+                    if (x < 0) { return; }
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
                         boardRecs1[y, x + z].Fill = None;
@@ -605,10 +620,9 @@ namespace Battleshit
                 }
                 else // Y
                 {
-                    if (y + pickedUpShitLength > rows)
-                    {
-                        return;
-                    }
+                    for (int i = 1; i < pickedUpShitIndex; i++) { y--; }
+                    if (y + pickedUpShitLength > rows) { return; }
+                    if (y < 0) { return; }
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
                         boardRecs1[y + z, x].Fill = None;
@@ -704,7 +718,7 @@ namespace Battleshit
                         break;
                 }
             }
-            else if (shitPickedUp && !gameStarted)  // highlight shit_bg
+            else if (shitPickedUp && !gameStarted)  // highlight possible drop on shit_bg
             {
                 Grid cell = currentImgMouseOver = sender as Grid;
 
@@ -717,6 +731,8 @@ namespace Battleshit
                 // highlight if possible to drop
                 if (pickedUpShitXorY) // X
                 {
+                    // move head of drop based on index
+                    for (int i = 1; i < pickedUpShitIndex; i++) { x--; }
                     // check for drop space validity
                     if (!CheckValidDropSpaceX(x, y)) { return; }
                     // show effect on drop space
@@ -725,10 +741,11 @@ namespace Battleshit
                         boardRecs1[y, x + z].Fill = Yellow;
                         boardImages1[y, x + z].Cursor = Cursors.Hand;
                     }
-
                 }
                 else // Y
                 {
+                    // move head of drop based on index
+                    for (int i = 1; i < pickedUpShitIndex; i++) { y--; }
                     // check for drop space validity
                     if (!CheckValidDropSpaceY(x, y)) { return; }
                     // show effect on drop space
@@ -1379,5 +1396,4 @@ namespace Battleshit
 
 // sound and visual indicator when poop is hit
 // error when trying to start game while holding poop
-// ghost of poop when moving
 // indicate you can rotate by right clicking
