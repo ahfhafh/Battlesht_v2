@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace Battleshit
@@ -46,7 +47,9 @@ namespace Battleshit
         private readonly SolidColorBrush Red = new(Color.FromArgb(80, 90, 0, 0));
         private readonly SolidColorBrush None = new(Color.FromArgb(0, 233, 224, 110));
 
-        private readonly Rectangle[,] boardRecs1 = new Rectangle[10, 10];
+        private readonly Rectangle[,] boardRecs1 = new Rectangle[cols, rows];
+
+        private bool hintShown = false;
 
         public SinglePlayer()
         {
@@ -197,7 +200,7 @@ namespace Battleshit
             Debug.WriteLine("HandlePickupNDrop, picked up" + shitPickedUp);
             if (!shitPickedUp && !gameStarted) // --------------------------------------------- Pickup Shit ------------------------------
             {
-                Debug.WriteLine("Shit picked up");
+                if (!hintShown) { ShowHint(); hintShown = true; }
                 pickedUpShitLength = 0;
                 pickedUpShitIndex = 1;
                 // remove shit
@@ -205,8 +208,8 @@ namespace Battleshit
                 // get index of img in board
                 UniformGrid parent = (UniformGrid)cell.Parent;
                 int index = parent.Children.IndexOf(cell);
-                int y = index / 10;
-                int x = index % 10;
+                int y = index / rows;
+                int x = index % cols;
 
                 BoardValues imgtype = gamestate.Board1[y, x];
                 switch (imgtype)
@@ -340,8 +343,8 @@ namespace Battleshit
                 Debug.WriteLine("Shit dropped");
                 UniformGrid parent = (UniformGrid)currentImgMouseOver.Parent;
                 int index = parent.Children.IndexOf(currentImgMouseOver);
-                int y = index / 10;
-                int x = index % 10;
+                int y = index / rows;
+                int x = index % cols;
 
                 if (pickedUpShitXorY) // X
                 {
@@ -457,6 +460,15 @@ namespace Battleshit
             }
         }
 
+        private async void ShowHint()
+        {
+            Hint.Visibility = Visibility.Visible;
+            if (this.FindResource("FadeInHint") is Storyboard fadeinsb) { BeginStoryboard(fadeinsb); }
+            await Task.Delay(6000);
+            if (this.FindResource("FadeOutHint") is Storyboard fadeoutsb) { BeginStoryboard(fadeoutsb); }
+            Hint.Visibility = Visibility.Hidden;
+        }
+
         private bool CheckValidDropSpaceY(int x, int y)
         {
             if (y + pickedUpShitLength > rows) { return false; }
@@ -524,8 +536,8 @@ namespace Battleshit
             // get index of img in board
             UniformGrid parent = (UniformGrid)cell.Parent;
             int index = parent.Children.IndexOf(cell);
-            int y = index / 10;
-            int x = index % 10;
+            int y = index / rows;
+            int x = index % cols;
 
             BoardValues imgtype = gamestate.Board1[y, x];
             switch (imgtype)
@@ -641,8 +653,8 @@ namespace Battleshit
                 // get index of img in board
                 UniformGrid parent = (UniformGrid)cell.Parent;
                 int index = parent.Children.IndexOf(cell);
-                int y = index / 10;
-                int x = index % 10; 
+                int y = index / rows;
+                int x = index % cols; 
                 BoardValues imgtype = gamestate.Board1[y, x];
                 switch (imgtype)
                 {
@@ -725,8 +737,8 @@ namespace Battleshit
                 // get index of img in board
                 UniformGrid parent = (UniformGrid)cell.Parent;
                 int index = parent.Children.IndexOf(cell);
-                int y = index / 10;
-                int x = index % 10;
+                int y = index / rows;
+                int x = index % cols;
 
                 // highlight if possible to drop
                 if (pickedUpShitXorY) // X
@@ -942,8 +954,8 @@ namespace Battleshit
 
             // get index of img in board
             int index = parent.Children.IndexOf(img);
-            int y = index / 10;
-            int x = index % 10;
+            int y = index / rows;
+            int x = index % cols;
 
             // check if shit tried already
             if ((this.gamestate.Board2[y, x] == BoardValues.Destroyed) || (this.gamestate.Board2[y, x] == BoardValues.Miss) || (this.gamestate.Board2[y, x] == BoardValues.Sunk))
@@ -1408,4 +1420,6 @@ namespace Battleshit
 
 
 // sound and visual indicator when poop is hit
-// indicate you can rotate by right clicking
+
+// choose size of grid
+// choose what ships there are

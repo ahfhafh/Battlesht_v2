@@ -8,6 +8,20 @@
         Title="SinglePlayer"
         d:DesignHeight="720" d:DesignWidth="1280"
         Background="{StaticResource BackgroundColor}">
+    <Page.Resources>
+        <Storyboard x:Key="FadeInHint">
+            <DoubleAnimation 
+                Storyboard.TargetName="Hint"
+                Storyboard.TargetProperty="(Border.Opacity)" 
+                From="0" To="1" Duration="0:0:0.5" />
+        </Storyboard>
+        <Storyboard x:Key="FadeOutHint">
+            <DoubleAnimation 
+                Storyboard.TargetName="Hint"
+                Storyboard.TargetProperty="(Border.Opacity)" 
+                From="1" To="0" Duration="0:0:0.5" />
+        </Storyboard>
+    </Page.Resources>
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="Assets/sewer_wall_bg.jpg" Stretch="UniformToFill"/>
@@ -56,5 +70,8 @@
         </Grid>
         <Slider x:Name="volumeSlider2" Grid.Column="1" Minimum="0" Maximum="1" ValueChanged="ChangeMediaVolume" Margin="0,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="343"/>
         <CheckBox x:Name="mute2" Content="Mute" Foreground="White" Checked="HandleMuteCheck" Unchecked="HandleMuteUnchecked" Margin="10,10,10,0" Grid.ColumnSpan="2" HorizontalAlignment="Right" FontWeight="Bold" />
+        <Border x:Name="Hint" Margin="480,0,0,50" Padding="5" BorderThickness="2" BorderBrush="Black" Background="#48DCE3FF" CornerRadius="10" Grid.ColumnSpan="2" Width="320" HorizontalAlignment="Left" Height="58" VerticalAlignment="Bottom" Visibility="Hidden">
+            <TextBlock HorizontalAlignment="Center" Margin="0,-6,0,0" TextWrapping="Wrap" Text="RMB = rotate shit" Width="316" Grid.ColumnSpan="2" FontSize="36" Foreground="Black" TextAlignment="Center" Height="58" VerticalAlignment="Top"/>
+        </Border>
     </Grid>
 </Page>
