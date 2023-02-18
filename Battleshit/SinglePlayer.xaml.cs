@@ -45,6 +45,7 @@ namespace Battleshit
         Point rtpoint = new(0.5, 0.5);
         private readonly SolidColorBrush Yellow = new(Color.FromArgb(80, 233, 224, 110));
         private readonly SolidColorBrush Red = new(Color.FromArgb(80, 90, 0, 0));
+        private readonly SolidColorBrush Green = new(Color.FromArgb(80, 0, 90, 0));
         private readonly SolidColorBrush None = new(Color.FromArgb(0, 233, 224, 110));
 
         private readonly Rectangle[,] boardRecs1 = new Rectangle[cols, rows];
@@ -368,7 +369,7 @@ namespace Battleshit
                             boardImages1[previousImgMouseOverY, previousImgMouseOverX + z].RenderTransform = nort;
                         }
                     }
-                        for (int z = 0; z < pickedUpShitLength; z++)
+                    for (int z = 0; z < pickedUpShitLength; z++)
                     {
                         if (z == 0)
                         {
@@ -422,7 +423,7 @@ namespace Battleshit
                             boardImages1[previousImgMouseOverY + z, previousImgMouseOverX].RenderTransform = nort;
                         }
                     }
-                        for (int z = 0; z < pickedUpShitLength; z++)
+                    for (int z = 0; z < pickedUpShitLength; z++)
                     {
                         if (z == 0)
                         {
@@ -476,61 +477,67 @@ namespace Battleshit
         {
             if (y + pickedUpShitLength > rows) { return false; }
             if (y < 0) { return false; }
+            bool valid = true;
             for (int z = 0; z < pickedUpShitLength; z++)
             {
+                boardRecs1[y + z, x].Fill = Yellow;
                 if (gamestate.Board1[y + z, x] != BoardValues.Empty)
                 {
-                    return false;
+                    valid = false;
+                    boardRecs1[y + z, x].Fill = Red;
                 }
                 if (Helpers.IsValidPos(x - 1, y + z, cols, rows))
                 {
-                    if (gamestate.Board1[y + z, x - 1] != BoardValues.Empty) { return false; }    // left
+                    if (gamestate.Board1[y + z, x - 1] != BoardValues.Empty) { valid = false; boardRecs1[y + z, x].Fill = Red; }    // left
                 }
                 if (Helpers.IsValidPos(x, y - 1 + z, cols, rows))
                 {
-                    if (gamestate.Board1[y - 1 + z, x] != BoardValues.Empty) { return false; }    // top
+                    if (gamestate.Board1[y - 1 + z, x] != BoardValues.Empty) { valid = false; boardRecs1[y + z, x].Fill = Red; }    // top
                 }
                 if (Helpers.IsValidPos(x, y + 1 + z, cols, rows))
                 {
-                    if (gamestate.Board1[y + 1 + z, x] != BoardValues.Empty) { return false; }    // bottom
+                    if (gamestate.Board1[y + 1 + z, x] != BoardValues.Empty) { valid = false; boardRecs1[y + z, x].Fill = Red; }    // bottom
                 }
                 if (Helpers.IsValidPos(x + 1, y + z, cols, rows))
                 {
-                    if (gamestate.Board1[y + z, x + 1] != BoardValues.Empty) { return false; }    // right
+                    if (gamestate.Board1[y + z, x + 1] != BoardValues.Empty) { valid = false; boardRecs1[y + z, x].Fill = Red; }    // right
                 }
             }
 
-            return true;
+            return valid;
         }
 
         private bool CheckValidDropSpaceX(int x, int y)
         {
             if (x + pickedUpShitLength > cols) { return false; }
             if (x < 0) { return false; }
+            bool valid = true;
             for (int z = 0; z < pickedUpShitLength; z++)
             {
+                boardRecs1[y, x + z].Fill = Yellow;
                 if (gamestate.Board1[y, x + z] != BoardValues.Empty)
                 {
-                    return false;
+                    valid = false;
+                    boardRecs1[y, x + z].Fill = Red;
                 }
                 if (Helpers.IsValidPos(x - 1 + z, y, cols, rows))
                 {
-                    if (gamestate.Board1[y, x - 1 + z] != BoardValues.Empty) { return false; }    // behind
+                    if (gamestate.Board1[y, x - 1 + z] != BoardValues.Empty) { valid = false; boardRecs1[y, x + z].Fill = Red; }    // behind
                 }
                 if (Helpers.IsValidPos(x + z, y - 1, cols, rows))
                 {
-                    if (gamestate.Board1[y - 1, x + z] != BoardValues.Empty) { return false; }    // top
+                    if (gamestate.Board1[y - 1, x + z] != BoardValues.Empty) { valid = false; boardRecs1[y, x + z].Fill = Red; }    // top
                 }
                 if (Helpers.IsValidPos(x + z, y + 1, cols, rows))
                 {
-                    if (gamestate.Board1[y + 1, x + z] != BoardValues.Empty) { return false; }    // bottom
+                    if (gamestate.Board1[y + 1, x + z] != BoardValues.Empty) { valid = false; boardRecs1[y, x + z].Fill = Red; }    // bottom
                 }
                 if (Helpers.IsValidPos(x + 1 + z, y, cols, rows))
                 {
-                    if (gamestate.Board1[y, x + 1 + z] != BoardValues.Empty) { return false; }    // in front
+                    if (gamestate.Board1[y, x + 1 + z] != BoardValues.Empty) { valid = false; boardRecs1[y, x + z].Fill = Red; }    // in front
                 }
             }
-            return true;
+            return valid;
         }
 
         private void HandleUnhighlight(object sender, MouseEventArgs e)
@@ -542,80 +549,83 @@ namespace Battleshit
             int y = index / rows;
             int x = index % cols;
 
-            BoardValues imgtype = gamestate.Board1[y, x];
-            switch (imgtype)
+            if (!shitPickedUp)   // unhighlight shit
             {
-                case BoardValues.Head_x:
-                    while (gamestate.Board1[y, x] != BoardValues.Tail_x)
-                    {
+                BoardValues imgtype = gamestate.Board1[y, x];
+                switch (imgtype)
+                {
+                    case BoardValues.Head_x:
+                        while (gamestate.Board1[y, x] != BoardValues.Tail_x)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            x++;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        x++;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                case BoardValues.Head_y:
-                    while (gamestate.Board1[y, x] != BoardValues.Tail_y)
-                    {
+                        break;
+                    case BoardValues.Head_y:
+                        while (gamestate.Board1[y, x] != BoardValues.Tail_y)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            y++;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        y++;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                case BoardValues.Body_x:
-                    while (gamestate.Board1[y, x] != BoardValues.Head_x)
-                    {
-                        x--;
-                    }
-                    while (gamestate.Board1[y, x] != BoardValues.Tail_x)
-                    {
+                        break;
+                    case BoardValues.Body_x:
+                        while (gamestate.Board1[y, x] != BoardValues.Head_x)
+                        {
+                            x--;
+                        }
+                        while (gamestate.Board1[y, x] != BoardValues.Tail_x)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            x++;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        x++;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                case BoardValues.Body_y:
-                    while (gamestate.Board1[y, x] != BoardValues.Head_y)
-                    {
-                        y--;
-                    }
-                    while (gamestate.Board1[y, x] != BoardValues.Tail_y)
-                    {
+                        break;
+                    case BoardValues.Body_y:
+                        while (gamestate.Board1[y, x] != BoardValues.Head_y)
+                        {
+                            y--;
+                        }
+                        while (gamestate.Board1[y, x] != BoardValues.Tail_y)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            y++;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        y++;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                case BoardValues.Tail_x:
-                    while (gamestate.Board1[y, x] != BoardValues.Head_x)
-                    {
+                        break;
+                    case BoardValues.Tail_x:
+                        while (gamestate.Board1[y, x] != BoardValues.Head_x)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            x--;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        x--;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                case BoardValues.Tail_y:
-                    while (gamestate.Board1[y, x] != BoardValues.Head_y)
-                    {
+                        break;
+                    case BoardValues.Tail_y:
+                        while (gamestate.Board1[y, x] != BoardValues.Head_y)
+                        {
+                            boardRecs1[y, x].Fill = None;
+                            cell.Cursor = Cursors.Arrow;
+                            y--;
+                        }
                         boardRecs1[y, x].Fill = None;
                         cell.Cursor = Cursors.Arrow;
-                        y--;
-                    }
-                    boardRecs1[y, x].Fill = None;
-                    cell.Cursor = Cursors.Arrow;
-                    break;
-                default:
-                    break;
-            }   // unhighlight shit
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             if (shitPickedUp)   // unhighlight shit_bg
             {
@@ -753,7 +763,7 @@ namespace Battleshit
                     // show effect on drop space
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
-                        boardRecs1[y, x + z].Fill = Yellow;
+                        boardRecs1[y, x + z].Fill = Green;
                         boardImages1[y, x + z].Cursor = Cursors.Hand;
                     }
                 }
@@ -766,7 +776,7 @@ namespace Battleshit
                     // show effect on drop space
                     for (int z = 0; z < pickedUpShitLength; z++)
                     {
-                        boardRecs1[y + z, x].Fill = Yellow;
+                        boardRecs1[y + z, x].Fill = Green;
                         boardImages1[y + z, x].Cursor = Cursors.Hand;
                     }
                 }
