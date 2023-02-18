@@ -377,6 +377,7 @@ namespace Battleshit
                             boardImages1[y, x + z].MouseEnter += HandleHighlight;
                             boardImages1[y, x + z].MouseLeave += HandleUnhighlight;
                             boardImages1[y, x + z].MouseLeftButtonDown += HandleShitPickupNDrop;
+                            boardImages1[y, x + z].RenderTransform = nort;
                         }
                         else if (z == pickedUpShitLength - 1)
                         {
@@ -385,6 +386,7 @@ namespace Battleshit
                             boardImages1[y, x + z].MouseEnter += HandleHighlight;
                             boardImages1[y, x + z].MouseLeave += HandleUnhighlight;
                             boardImages1[y, x + z].MouseLeftButtonDown += HandleShitPickupNDrop;
+                            boardImages1[y, x + z].RenderTransform = nort;
                         }
                         else
                         {
@@ -393,6 +395,7 @@ namespace Battleshit
                             boardImages1[y, x + z].MouseEnter += HandleHighlight;
                             boardImages1[y, x + z].MouseLeave += HandleUnhighlight;
                             boardImages1[y, x + z].MouseLeftButtonDown += HandleShitPickupNDrop;
+                            boardImages1[y, x + z].RenderTransform = nort;
                         }
                     }
 
